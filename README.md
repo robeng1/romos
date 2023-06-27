@@ -1,7 +1,4 @@
 
-```
-# Bootloader README
-
 This repository contains a simple x86 assembly bootloader code that displays the message "Hello World from RomOS!" on the screen. The code is designed to run as a boot sector, typically at memory address 0x7C00.
 
 ## Prerequisites
