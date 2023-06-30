@@ -15,7 +15,7 @@ To assemble and run the bootloader, you'll need the following:
 2. Assemble the bootloader code using NASM:
 
    ```bash
-   nasm -f bin boot.asm -o boot.bin
+   make
    ```
 
    This command assembles the assembly code in `boot.asm` and outputs the raw binary file `boot.bin`.
@@ -23,7 +23,7 @@ To assemble and run the bootloader, you'll need the following:
 3. Run the bootloader using QEMU:
 
    ```bash
-   qemu-system-x86_64 -hda bootloader.bin
+   qemu-system-x86_64 -hda ./bin/boot.bin
    ```
 
    This command runs QEMU and boots the virtual machine from the `boot.bin` file.
