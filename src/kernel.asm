@@ -34,3 +34,5 @@ _start:
     out 0x92, al         ; Write the value in AL back to port 0x92
     
     jmp $                ; Endless loop (halt execution)
+
+times 512-($ - $$) db 0  ; Fill the remaining bytes in the boot sector with zeros to make it 512 bytes

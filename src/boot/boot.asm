@@ -28,7 +28,7 @@ init:
     mov eax, cr0         ; Move the value of CR0 (Control Register 0) into EAX
     or eax, 0x1          ; Set the first bit of EAX to enable protected mode
     mov cr0, eax         ; Move the value in EAX back to CR0
-    jmp CODE_SEG:load32  ; Far jump to the protected mode code segment
+    jmp CODE_SEG:load_kernel  ; Far jump to the protected mode code segment
 
 ; GDT (Global Descriptor Table)
 gdt_start:
@@ -69,12 +69,12 @@ gdt_descriptor:
     dd gdt_start                ; Address of the GDT
 
 [BITS 32]
-_lodk:
+load_kernel:
     mov eax, 1 ; Start reading from sector 1 because sector 2 is used for the bootloader
     mov ecx, 100 ; Number of sectors to load
     mov edi, 0x0100000 ; Destination address in memory to load the sectors
     call ata_lba_read ; Call the function to read sectors using ATA LBA (Logical Block Addressing) method
-    jpm CODE_SEG:0x0100000 ; Jump to the loaded code(the kernel) at memory address 0x0100000
+    jmp CODE_SEG:0x0100000 ; Jump to the loaded code(the kernel) at memory address 0x0100000
 
 ; Function to read sectors using ATA LBA (Logical Block Addressing) method
 ata_lba_read:
