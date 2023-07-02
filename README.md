@@ -1,38 +1,37 @@
 
-This repository contains a simple x86 assembly bootloader code that displays the message "Hello World from RomOS!" on the screen. The code is designed to run as a boot sector, typically at memory address 0x7C00.
+# Simple OS Code
+
+This repository contains a simple OS code.
 
 ## Prerequisites
 
-To assemble and run the bootloader, you'll need the following:
+To assemble and run the OS, you'll need the following:
 
 - NASM (Netwide Assembler): An assembler for x86 assembly language.
 - QEMU (Quick EMUlator): A virtual machine emulator.
+- Cross Compile GCC. See [GCC Cross-Compiler](https://wiki.osdev.org/GCC_Cross-Compiler) for more information.
 
 ## Usage
 
 1. Clone the repository and navigate to the project directory.
 
-2. Assemble the bootloader code using NASM:
+2. Build the OS code:
+
+```bash
+sudo chmod +x ./build.sh  # Grant exec permission
+./build.sh
+```
+
+3. Run the OS using QEMU:
 
    ```bash
-   make
+   qemu-system-x86_64 -hda ./bin/os.bin
    ```
 
-   This command assembles the assembly code in `boot.asm` and outputs the raw binary file `boot.bin`.
+   This command runs QEMU and boots the virtual machine from the `os.bin` file.
 
-3. Run the bootloader using QEMU:
-
-   ```bash
-   qemu-system-x86_64 -hda ./bin/boot.bin
-   ```
-
-   This command runs QEMU and boots the virtual machine from the `boot.bin` file.
-
-4. You should see the message "Hello World from RomOS!" displayed on the screen.
 
 ## Customization
-
-- If you want to modify the message displayed by the bootloader, open the `boot.asm` file and change the contents of the `message` variable.
 
 - Feel free to explore and modify the code to add additional functionality or experiment with different features.
 

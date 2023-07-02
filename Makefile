@@ -27,4 +27,5 @@ clean:
 	rm  -rf ./bin/os.bin
 	rm  -rf ${FILES}
 	rm  -rf ./build/kernel.o
+	rm  -rf ./build/romos.o
 	

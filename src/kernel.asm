@@ -1,5 +1,9 @@
 [BITS 32]
+
 global _start
+extern kernel_main
+
+    
 CODE_SEG equ 0x08  ; Calculate the offset of the code segment in the GDT
 DATA_SEG equ 0x10  ; Calculate the offset of the data segment in the GDT
 
@@ -32,7 +36,7 @@ _start:
     in al, 0x92          ; Read the value from port 0x92 into AL
     or al, 2             ; Set bit 1 of AL
     out 0x92, al         ; Write the value in AL back to port 0x92
-    
+    call kernel_main
     jmp $                ; Endless loop (halt execution)
 
 times 512-($ - $$) db 0  ; Fill the remaining bytes in the boot sector with zeros to make it 512 bytes
