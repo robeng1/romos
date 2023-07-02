@@ -17,10 +17,10 @@ To assemble and run the OS, you'll need the following:
 
 2. Build the OS code:
 
-```bash
-sudo chmod +x ./build.sh  # Grant exec permission
-./build.sh
-```
+   ```bash
+   sudo chmod +x ./build.sh  # Grant exec permission
+   ./build.sh
+   ```
 
 3. Run the OS using QEMU:
 
