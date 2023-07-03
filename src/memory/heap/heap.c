@@ -80,7 +80,7 @@ int heap_get_start_block(struct heap *heap, uint32_t total_blocks)
   // Find the initial subarray that satisfies the block size
   while (end < table->total)
   {
-    if (heap_get_entry_type(table->entries[end]) != HEAP_BLOCK_TABLE_ENTRY_FREE)
+    if (heap_get_entry_type(table->entries[end]) == HEAP_BLOCK_TABLE_ENTRY_FREE)
     {
       count++;
     }
@@ -92,7 +92,7 @@ int heap_get_start_block(struct heap *heap, uint32_t total_blocks)
 
     while (count > total_blocks)
     {
-      if (heap_get_entry_type(table->entries[start]) != HEAP_BLOCK_TABLE_ENTRY_FREE)
+      if (heap_get_entry_type(table->entries[start]) == HEAP_BLOCK_TABLE_ENTRY_FREE)
       {
         count--;
       }
