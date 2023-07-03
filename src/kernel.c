@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include "memory/heap/kernel_heap.h"
 #include <stdint.h>
 #include <stddef.h>
 #include "idt/idt.h"
@@ -71,11 +72,14 @@ void print(const char *str)
   }
 }
 
-void kernel_main()
+void start_kernel()
 {
   init_terminal();
   print("Welcome to RomOS, the only Operating System you'll ever need");
 
+  // Initialize the heap
+  kernel_heap_init();
+  
   // Initialize the interrupt descriptor table
   init_idt();
 }

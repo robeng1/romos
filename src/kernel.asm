@@ -1,7 +1,7 @@
 [BITS 32]  ; Set the assembly code to be executed in 32-bit mode
 
 global _start
-extern kernel_main
+extern start_kernel
 
 CODE_SEG equ 0x08  ; Define the offset of the code segment in the GDT
 DATA_SEG equ 0x10  ; Define the offset of the data segment in the GDT
@@ -44,7 +44,7 @@ _start:
     ; End remap of the master PIC
     sti
 
-    call kernel_main     ; Call the kernel_main function
+    call start_kernel     ; Call the kernel_main function
 
     jmp $                ; Endless loop (halt execution)
 
