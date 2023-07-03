@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include <stdint.h>
 #include <stddef.h>
+#include "idt/idt.h"
 
 uint16_t *vram = 0;
 uint16_t t_row = 0;
@@ -38,7 +39,7 @@ void writechar(char c, char colour)
 void init_terminal()
 {
 
-  vram = (uint16_t *)(STDOUT);
+  vram = (uint16_t* )(STDOUT);
   t_row = 0;
   t_column = 0;
 
@@ -74,4 +75,7 @@ void kernel_main()
 {
   init_terminal();
   print("Welcome to RomOS, the only Operating System you'll ever need");
+
+  // Initialize the interrupt descriptor table
+  init_idt();
 }
