@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include "idt/idt.h"
 
+#define TOLOWER(x) ((x) | 0x20)
+
 uint16_t *vram = 0;
 uint16_t t_row = 0;
 uint16_t t_column = 0;
@@ -53,14 +55,13 @@ void init_terminal()
   }
 }
 
-size_t strlen(const char *str)
+size_t strlen(const char *s)
 {
-  size_t len = 0;
-  while (str[len])
-  {
-    ++len;
-  }
-  return len;
+  const char *sc;
+
+  for (sc = s; *sc != '\0'; ++sc)
+    /* nothing */;
+  return sc - s;
 }
 
 void print(const char *str)
@@ -82,4 +83,7 @@ void start_kernel()
   
   // Initialize the interrupt descriptor table
   init_idt();
+
+  enable_interrupts();
+
 }

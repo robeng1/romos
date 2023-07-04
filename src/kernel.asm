@@ -42,7 +42,6 @@ _start:
     mov al, 00000001b    ; Set the initialization command for the master PIC
     out 0x21, al         ; Send the command to the master PIC port
     ; End remap of the master PIC
-    sti
 
     call start_kernel     ; Call the kernel_main function
 
