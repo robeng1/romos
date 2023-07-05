@@ -1,5 +1,5 @@
-#ifndef KERNEL_HEAP_H
-#define KERNEL_HEAP_H
+#ifndef MEMORY_KERNEL_HEAP_H
+#define MEMORY_KERNEL_HEAP_H
 
 #include <stdint.h>
 #include <stddef.h>

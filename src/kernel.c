@@ -1,10 +1,10 @@
 #include "kernel.h"
 #include "memory/heap/kernel_heap.h"
+#include "memory/paging/paging.h"
+#include "string/string.h"
 #include <stdint.h>
 #include <stddef.h>
 #include "idt/idt.h"
-
-#define TOLOWER(x) ((x) | 0x20)
 
 uint16_t *vram = 0;
 uint16_t t_row = 0;
@@ -42,7 +42,7 @@ void writechar(char c, char colour)
 void init_terminal()
 {
 
-  vram = (uint16_t* )(STDOUT);
+  vram = (uint16_t *)(STDOUT);
   t_row = 0;
   t_column = 0;
 
@@ -55,15 +55,6 @@ void init_terminal()
   }
 }
 
-size_t strlen(const char *s)
-{
-  const char *sc;
-
-  for (sc = s; *sc != '\0'; ++sc)
-    /* nothing */;
-  return sc - s;
-}
-
 void print(const char *str)
 {
   size_t len = strlen(str);
@@ -73,17 +64,28 @@ void print(const char *str)
   }
 }
 
+static struct paging_4GB_chunk *kernel_chunk = 0;
+
 void start_kernel()
 {
   init_terminal();
-  print("Welcome to RomOS, the only Operating System you'll ever need");
 
   // Initialize the heap
   kernel_heap_init();
-  
+
   // Initialize the interrupt descriptor table
   init_idt();
 
+  // Setup paging
+  kernel_chunk = paging_new_4GB(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
+
+  // Switch to kernel paging chunk
+  paging_switch(kernel_chunk);
+
+  // Enable paging
+  enable_paging();
+
   enable_interrupts();
 
+  print("Welcome to RomOS, the only Operating System you'll ever need");
 }
