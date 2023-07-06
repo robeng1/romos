@@ -6,7 +6,7 @@
 extern void load_page_directory(uint32_t *directory);
 
 // Global variable to store the current page directory
-static uint32_t *current_directory = 0;
+static uint32_t *current_page_directory = 0;
 
 // Allocate and initialize a new 4GB paging chunk with the specified flags
 struct paging_4GB_chunk *paging_new_4GB(uint8_t flags)
@@ -54,7 +54,7 @@ void paging_switch(struct paging_4GB_chunk *directory)
   load_page_directory(directory->directory_entry);
 
   // Update the current page directory pointer
-  current_directory = directory->directory_entry;
+  current_page_directory = directory->directory_entry;
 }
 
 // Free the memory occupied by a 4GB paging chunk

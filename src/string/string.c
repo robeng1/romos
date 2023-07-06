@@ -110,7 +110,7 @@ char *strncpy(char *dest, const char *src, int count)
 
 bool isdigit(char c)
 {
-  return c >= 48 && c <= 57; // Check if the character is a digit
+  return (c >= '0') && (c <= '9');
 }
 
 int tonumericdigit(char c)

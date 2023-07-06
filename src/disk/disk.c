@@ -41,7 +41,7 @@ void disk_search_and_init()
   disk.type = ROMOS_DISK_TYPE_REAL;     // Set the disk type to "real" in the disk structure
   disk.sector_size = ROMOS_SECTOR_SIZE; // Set the sector size in the disk structure
   disk.id = 0;                          // Set the disk ID in the disk structure
-  // disk.filesystem = fs_resolve(&disk);   // Resolve the filesystem for the disk (currently commented out)
+  disk.filesystem = fs_resolve(&disk);   // Resolve the filesystem for the disk
 }
 
 struct disk *disk_get(int index)

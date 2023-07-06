@@ -2,6 +2,9 @@
 #include "memory/heap/kernel_heap.h"
 #include "memory/paging/paging.h"
 #include "string/string.h"
+#include "fs/file.h"
+#include "disk/disk.h"
+#include "fs/parser.h"
 #include <stdint.h>
 #include <stddef.h>
 #include "idt/idt.h"
@@ -39,7 +42,7 @@ void writechar(char c, char colour)
   }
 }
 
-void init_terminal()
+void term_init()
 {
 
   vram = (uint16_t *)(STDOUT);
@@ -64,14 +67,28 @@ void print(const char *str)
   }
 }
 
+void panic(const char *msg)
+{
+  print(msg);
+  while (1)
+  {
+  }
+}
+
 static struct paging_4GB_chunk *kernel_chunk = 0;
 
 void start_kernel()
 {
-  init_terminal();
+  term_init();
 
   // Initialize the heap
   kernel_heap_init();
+
+  // Initialize filesystems
+  fs_init();
+
+  // Search and initialize the disks
+  disk_search_and_init();
 
   // Initialize the interrupt descriptor table
   init_idt();

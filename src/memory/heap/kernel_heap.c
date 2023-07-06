@@ -17,8 +17,7 @@ void kernel_heap_init()
   int res = heap_create(&kernel_heap, (void *)(ROMOS_HEAP_ADDRESS), end, &kernel_heap_table);
   if (res < 0)
   {
-    // TODO: should panic
-    print("Failed to create heap\n");
+    panic("Failed to create heap\n");
   }
 }
 

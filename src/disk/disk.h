@@ -1,6 +1,8 @@
 #ifndef DISK_H
 #define DISK_H
 
+#include "fs/file.h"
+
 typedef unsigned int ROMOS_DISK_TYPE;
 
 // Represents a real physical hard disk
@@ -14,7 +16,7 @@ struct disk
   // The id of the disk
   int id;
 
-  // struct filesystem *filesystem;
+  struct filesystem *filesystem;
 
   // The private data of our filesystem
   void *fs_private;

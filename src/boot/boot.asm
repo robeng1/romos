@@ -4,11 +4,33 @@ BITS 16                ; Specify that the code is 16-bit
 CODE_SEG equ gdt_code - gdt_start  ; Calculate the offset of the code segment in the GDT
 DATA_SEG equ gdt_data - gdt_start  ; Calculate the offset of the data segment in the GDT
 
-_start:
-    jmp short start      ; Jump to the 'start' label (relative jump)
-    nop                  ; No operation (placeholder)
+jmp short start      ; Jump to the 'start' label (relative jump)
+nop                  ; No operation (placeholder)
 
-times 33 db 0           ; Fill 33 bytes with zeros
+; FAT16 Header
+oem_identifier              db 'ROMOS   '       ; OEM identifier: A string identifying the OEM or operating system
+bytes_per_sector            dw 0x200            ; Bytes per sector: The number of bytes in each sector of the disk
+sectors_per_cluster         db 0x80             ; Sectors per cluster: The number of sectors grouped together as a cluster
+reserved_sectors            dw 200              ; Reserved sectors: The number of sectors reserved for the boot sector and other purposes
+fat_copies                  db 0x02             ; Number of FAT copies: The number of copies of the File Allocation Table (FAT)
+root_dir_entries            dw 0x40             ; Number of root directory entries: The maximum number of entries in the root directory
+num_sectors                 dw 0x00             ; Total number of sectors: The total number of sectors on the disk (0 for large disks)
+media_type                  db 0xF8             ; Media type: The type of media (e.g., floppy disk, hard disk)
+sectors_per_fat             dw 0x100            ; Sectors per FAT: The number of sectors occupied by each copy of the FAT
+sectors_per_track           dw 0x20             ; Sectors per track: The number of sectors per track
+num_of_heads                dw 0x40             ; Number of heads: The number of heads or read/write surfaces
+hidden_sectors              dd 0x00             ; Number of hidden sectors: The number of sectors preceding the partition
+sectors_big                 dd 0x773594         ; Total number of sectors (for large disks): The total number of sectors on the disk for large disks
+
+; Extended BPB (Dos 4.0)
+drive_number                db 0x80             ; Drive number: The drive number or unit number
+win_nt_bit                  db 0x00             ; Windows NT bit: Reserved for Windows NT operating systems
+signature                   db 0x29             ; Signature: A signature byte indicating the presence of an extended BPB
+volume_id                   dd 0xD105           ; Volume ID: A unique identifier for the volume
+volume_id_string            db 'ROMOS BOOT '    ; Volume ID string: A string representing the volume ID
+system_id_string            db 'FAT16   '       ; System ID string: A string representing the system ID
+
+
 
 start:
     jmp 0x00:init        ; Jump to the 'init' label at memory address 0x7C0
