@@ -8,11 +8,11 @@
 #include "status.h"                  // Include the "status.h" header file
 #include "kernel.h"                  // Include the "kernel.h" header file
 
-struct filesystem *filesystems[ROMOS_MAX_FILESYSTEMS];                // Array of pointers to filesystems
-struct file_descriptor *file_descriptors[ROMOS_MAX_FILE_DESCRIPTORS]; // Array of pointers to file descriptors
+struct filesystem_t *filesystems[ROMOS_MAX_FILESYSTEMS];                // Array of pointers to filesystems
+struct file_descriptor_t *file_descriptors[ROMOS_MAX_FILE_DESCRIPTORS]; // Array of pointers to file descriptors
 
 // Function to get a pointer to a free filesystem slot
-static struct filesystem **fs_get_free_filesystem()
+static struct filesystem_t **fs_get_free_filesystem()
 {
   int i = 0;
   for (i = 0; i < ROMOS_MAX_FILESYSTEMS; i++)
@@ -27,9 +27,9 @@ static struct filesystem **fs_get_free_filesystem()
 }
 
 // Function to insert a filesystem into the filesystems array
-void fs_insert_filesystem(struct filesystem *filesystem)
+void fs_insert_filesystem(struct filesystem_t *filesystem)
 {
-  struct filesystem **fs;
+  struct filesystem_t **fs;
   fs = fs_get_free_filesystem();
   if (!fs)
   {
@@ -64,21 +64,21 @@ void fs_init()
 
 
 // Function to free a file descriptor
-static void file_free_descriptor(struct file_descriptor *desc)
+static void file_free_descriptor(struct file_descriptor_t *desc)
 {
   file_descriptors[desc->index - 1] = 0x00;
   kernel_free(desc);
 }
 
 // Function to create a new file descriptor
-static int file_new_descriptor(struct file_descriptor **desc_out)
+static int file_new_descriptor(struct file_descriptor_t **desc_out)
 {
   int res = -ENOMEM;
   for (int i = 0; i < ROMOS_MAX_FILE_DESCRIPTORS; i++)
   {
     if (file_descriptors[i] == 0)
     {
-      struct file_descriptor *desc = kernel_zalloc(sizeof(struct file_descriptor));
+      struct file_descriptor_t *desc = kernel_zalloc(sizeof(struct file_descriptor_t));
       // Descriptors start at 1
       desc->index = i + 1;
       file_descriptors[i] = desc;
@@ -92,7 +92,7 @@ static int file_new_descriptor(struct file_descriptor **desc_out)
 }
 
 // Function to get a file descriptor by its index
-static struct file_descriptor *file_get_descriptor(int fd)
+static struct file_descriptor_t *file_get_descriptor(int fd)
 {
   if (fd <= 0 || fd >= ROMOS_MAX_FILE_DESCRIPTORS)
   {
@@ -105,9 +105,9 @@ static struct file_descriptor *file_get_descriptor(int fd)
 }
 
 // Function to resolve the filesystem for a disk
-struct filesystem *fs_resolve(struct disk *disk)
+struct filesystem_t *fs_resolve(struct disk_t *disk)
 {
-  struct filesystem *fs = 0;
+  struct filesystem_t *fs = 0;
   for (int i = 0; i < ROMOS_MAX_FILESYSTEMS; i++)
   {
     if (filesystems[i] != 0 && filesystems[i]->resolve(disk) == 0)
@@ -143,7 +143,7 @@ FILE_MODE file_get_mode_by_string(const char *str)
 int fopen(const char *filename, const char *mode_str)
 {
   int res = 0;
-  struct path_root *root_path = parser_parse(filename, NULL);
+  struct path_root_t *root_path = parser_parse(filename, NULL);
   if (!root_path)
   {
     res = -EINVARG;
@@ -158,7 +158,7 @@ int fopen(const char *filename, const char *mode_str)
   }
 
   // Ensure the disk we are reading from exists
-  struct disk *disk = disk_get(root_path->drive_no);
+  struct disk_t *disk = disk_get(root_path->drive_no);
   if (!disk)
   {
     res = -EIO;
@@ -185,7 +185,7 @@ int fopen(const char *filename, const char *mode_str)
     goto out;
   }
 
-  struct file_descriptor *desc = 0;
+  struct file_descriptor_t *desc = 0;
   res = file_new_descriptor(&desc);
   if (res < 0)
   {
@@ -205,10 +205,10 @@ out:
 }
 
 // Function to get the file stat
-int fstat(int fd, struct file_stat *stat)
+int fstat(int fd, struct file_stat_t *stat)
 {
   int res = 0;
-  struct file_descriptor *desc = file_get_descriptor(fd);
+  struct file_descriptor_t *desc = file_get_descriptor(fd);
   if (!desc)
   {
     res = -EIO;
@@ -224,7 +224,7 @@ out:
 int fclose(int fd)
 {
   int res = 0;
-  struct file_descriptor *desc = file_get_descriptor(fd);
+  struct file_descriptor_t *desc = file_get_descriptor(fd);
   if (!desc)
   {
     res = -EIO;
@@ -244,7 +244,7 @@ out:
 int fseek(int fd, int offset, FILE_SEEK_MODE whence)
 {
   int res = 0;
-  struct file_descriptor *desc = file_get_descriptor(fd);
+  struct file_descriptor_t *desc = file_get_descriptor(fd);
   if (!desc)
   {
     res = -EIO;
@@ -266,7 +266,7 @@ int fread(void *ptr, uint32_t size, uint32_t nmemb, int fd)
     goto out;
   }
 
-  struct file_descriptor *desc = file_get_descriptor(fd);
+  struct file_descriptor_t *desc = file_get_descriptor(fd);
   if (!desc)
   {
     res = -EINVARG;

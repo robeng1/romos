@@ -1,6 +1,7 @@
 [BITS 32]  ; Set the assembly code to be executed in 32-bit mode
 
 global _start
+global kernel_registers
 extern start_kernel
 
 CODE_SEG equ 0x08  ; Define the offset of the code segment in the GDT
@@ -46,5 +47,13 @@ _start:
     call start_kernel     ; Call the kernel_main function
 
     jmp $                ; Endless loop (halt execution)
+
+kernel_registers:
+    mov ax, 0x10         ; Move the offset of the data segment into AX
+    mov ds, ax           ; Load DS with the data segment offset
+    mov es, ax           ; Load ES with the data segment offset
+    mov gs, ax           ; Load GS with the data segment offset
+    mov fs, ax           ; Load FS with the data segment offset
+    ret                  ; Return from the function
 
 times 512-($ - $$) db 0  ; Fill the remaining bytes in the boot sector with zeros to make it 512 bytes

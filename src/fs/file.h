@@ -28,25 +28,25 @@ enum
 
 typedef unsigned int FILE_STAT_FLAGS; // Define the FILE_STAT_FLAGS type as an unsigned int
 
-struct disk; // Forward declaration of the struct disk
+struct disk_t; // Forward declaration of the struct disk
 
 // Structure representing file stat information
-struct file_stat
+struct file_stat_t
 {
   FILE_STAT_FLAGS flags; // File stat flags
   uint32_t filesize;     // File size
 };
 
 // Function pointer types for file system operations
-typedef void *(*FS_OPEN_FUNCTION)(struct disk *disk, struct path_part *path, FILE_MODE mode);
-typedef int (*FS_READ_FUNCTION)(struct disk *disk, void *private, uint32_t size, uint32_t nmemb, char *out);
-typedef int (*FS_RESOLVE_FUNCTION)(struct disk *disk);
+typedef void *(*FS_OPEN_FUNCTION)(struct disk_t *disk, struct path_part_t *path, FILE_MODE mode);
+typedef int (*FS_READ_FUNCTION)(struct disk_t *disk, void *private, uint32_t size, uint32_t nmemb, char *out);
+typedef int (*FS_RESOLVE_FUNCTION)(struct disk_t *disk);
 typedef int (*FS_CLOSE_FUNCTION)(void *private);
 typedef int (*FS_SEEK_FUNCTION)(void *private, uint32_t offset, FILE_SEEK_MODE seek_mode);
-typedef int (*FS_STAT_FUNCTION)(struct disk *disk, void *private, struct file_stat *stat);
+typedef int (*FS_STAT_FUNCTION)(struct disk_t *disk, void *private, struct file_stat_t *stat);
 
 // Structure representing a file system
-struct filesystem
+struct filesystem_t
 {
   FS_RESOLVE_FUNCTION resolve; // Function to resolve the file system
   FS_OPEN_FUNCTION open;       // Function to open a file
@@ -58,12 +58,12 @@ struct filesystem
 };
 
 // Structure representing a file descriptor
-struct file_descriptor
+struct file_descriptor_t
 {
-  int index;                     // Descriptor index
-  struct filesystem *filesystem; // File system associated with the file descriptor
-  void *private;                 // Private data for internal file descriptor
-  struct disk *disk;             // Disk to be used with the file descriptor
+  int index;                       // Descriptor index
+  struct filesystem_t *filesystem; // File system associated with the file descriptor
+  void *private;                   // Private data for internal file descriptor
+  struct disk_t *disk;             // Disk to be used with the file descriptor
 };
 
 // Function declarations
@@ -71,10 +71,10 @@ void fs_init();                                              // Initialize the f
 int fopen(const char *filename, const char *mode_str);       // Open a file with specified filename and mode
 int fseek(int fd, int offset, FILE_SEEK_MODE whence);        // Move the file position indicator to a specific location
 int fread(void *ptr, uint32_t size, uint32_t nmemb, int fd); // Read data from a file
-int fstat(int fd, struct file_stat *stat);                   // Retrieve file stat information
+int fstat(int fd, struct file_stat_t *stat);                 // Retrieve file stat information
 int fclose(int fd);                                          // Close a file
 
-void fs_insert_filesystem(struct filesystem *filesystem); // Insert a file system into the available file systems list
-struct filesystem *fs_resolve(struct disk *disk);         // Resolve the file system for a specific disk
+void fs_insert_filesystem(struct filesystem_t *filesystem); // Insert a file system into the available file systems list
+struct filesystem_t *fs_resolve(struct disk_t *disk);       // Resolve the file system for a specific disk
 
 #endif

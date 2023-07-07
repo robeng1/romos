@@ -4,7 +4,7 @@
 #include "status.h"        // Include header file for status codes
 #include "memory/memory.h" // Include header file for memory operations
 
-struct disk disk; // Declare a disk structure named "disk"
+struct disk_t disk; // Declare a disk structure named "disk"
 
 int disk_read_sector(int lba, int total, void *buf)
 {
@@ -37,14 +37,14 @@ int disk_read_sector(int lba, int total, void *buf)
 
 void disk_search_and_init()
 {
-  memset(&disk, 0, sizeof(disk));       // Set the disk structure to all zeros
-  disk.type = ROMOS_DISK_TYPE_REAL;     // Set the disk type to "real" in the disk structure
-  disk.sector_size = ROMOS_SECTOR_SIZE; // Set the sector size in the disk structure
-  disk.id = 0;                          // Set the disk ID in the disk structure
-  disk.filesystem = fs_resolve(&disk);   // Resolve the filesystem for the disk
+  memset(&disk, 0, sizeof(disk));      // Set the disk structure to all zeros
+  disk.type = ROMOS_DISK_TYPE_REAL;      // Set the disk type to "real" in the disk structure
+  disk.sector_size = ROMOS_SECTOR_SIZE;  // Set the sector size in the disk structure
+  disk.id = 0;                           // Set the disk ID in the disk structure
+  disk.filesystem = fs_resolve(&disk); // Resolve the filesystem for the disk
 }
 
-struct disk *disk_get(int index)
+struct disk_t *disk_get(int index)
 {
   if (index != 0)
     return 0; // If the provided index is not 0, return NULL
@@ -52,7 +52,7 @@ struct disk *disk_get(int index)
   return &disk; // Return a pointer to the disk structure
 }
 
-int disk_read_block(struct disk *idisk, unsigned int lba, int total, void *buf)
+int disk_read_block(struct disk_t *idisk, unsigned int lba, int total, void *buf)
 {
   if (idisk != &disk)
   {

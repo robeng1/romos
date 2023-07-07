@@ -4,8 +4,8 @@
 #include "kernel.h"
 #include "memory/memory.h"
 
-struct heap kernel_heap;
-struct heap_table kernel_heap_table;
+struct heap_t kernel_heap;
+struct heap_table_t kernel_heap_table;
 
 void kernel_heap_init()
 {

@@ -1,0 +1,21 @@
+#ifndef ISR80H_H
+#define ISR80H_H
+
+enum system_cmd_t
+{
+  __SYS_IO_CMD_PRINT,
+  __SYS_IO_CMD_GETKEY,
+  __SYS_IO_CMD_PUTCHAR,
+
+  __SYS_MEM_CMD_MALLOC,
+  __SYS_MEM_FREE,
+
+  __SYS_PROC_PROCESS_LOAD_START,
+  __SYS_PROC_INVOKE_SYSTEM_COMMAND,
+  __SYS_PROC_GET_PROGRAM_ARGUMENTS,
+  __SYS_PROC_EXIT
+};
+
+void isr80h_hookup_commands();
+
+#endif
