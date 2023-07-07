@@ -95,18 +95,7 @@ int heap_get_start_block(struct heap_t *heap, uint32_t total_blocks)
       // Stop when the window size reaches the required number of blocks
       if (window_size == total_blocks)
       {
-        // Check if the block immediately after the found region is free or used
-        if (i + 1 < table->total && heap_get_entry_type(table->entries[i + 1]) != HEAP_BLOCK_TABLE_ENTRY_FREE)
-        {
-          // If it's used, reset the window and continue the search
-          window_size = 0;
-          window_start = -1;
-        }
-        else
-        {
-          // If it's free, break the loop
-          break;
-        }
+        break;
       }
     }
   }

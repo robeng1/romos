@@ -137,41 +137,37 @@ void start_kernel()
 
   memset(gdt_entries, 0x00, sizeof(gdt_entries));
   gdt_ptr_to_gdt(gdt_entries, gdt_ptr, ROMOS_TOTAL_GDT_SEGMENTS);
-
   // Load the gdt
   gdt_load(sizeof(gdt_entries), gdt_entries);
-
+  
   // Initialize the heap
   kernel_heap_init();
 
   // Initialize filesystems
   fs_init();
-
+  
   // Search and initialize the disks
   disk_search_and_init();
 
   // Initialize the interrupt descriptor table
   init_idt();
-
+  
   // Setup the TSS
   memset(&tss, 0x00, sizeof(tss));
   tss.esp0 = 0x600000;
   tss.ss0 = KERNEL_DATA_SELECTOR;
-
   // Load the TSS
   tss_load(0x28);
-
+  
   // Setup paging
   kernel_chunk = paging_new_4GB(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
-
   // Switch to kernel paging chunk
   paging_switch(kernel_chunk);
-
   // Enable paging
   paging_init();
 
   // Register the kernel commands
   isr80h_hookup_commands();
 
-  print("Welcome to RomOS, the only Operating System you'll ever need\n\n\n");
+  // print("Welcome to RomOS, the only Operating System you'll ever need\n\n\n");
 }
