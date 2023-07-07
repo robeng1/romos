@@ -6,7 +6,7 @@
 #include "disk/disk.h"               // Include the "disk/disk.h" header file
 #include "fat/fat16.h"               // Include the "fat/fat16.h" header file
 #include "status.h"                  // Include the "status.h" header file
-#include "kernel.h"                  // Include the "kernel.h" header file
+#include "kernel/kernel.h"                  // Include the "kernel.h" header file
 
 struct filesystem_t *filesystems[ROMOS_MAX_FILESYSTEMS];                // Array of pointers to filesystems
 struct file_descriptor_t *file_descriptors[ROMOS_MAX_FILE_DESCRIPTORS]; // Array of pointers to file descriptors

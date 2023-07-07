@@ -1,7 +1,7 @@
 #include "io.h"
 #include "task/task.h"
 // #include "keyboard/keyboard.h"
-#include "kernel.h"
+#include "kernel/kernel.h"
 
 void *isr80h_io_cmd_print(struct interrupt_frame_t *frame)
 {

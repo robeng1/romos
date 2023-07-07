@@ -6,7 +6,7 @@
 #include "mm/heap/kernel_heap.h"
 #include "mm/memory.h"
 #include "status.h"
-#include "kernel.h"
+#include "kernel/kernel.h"
 #include "config.h"
 #include <stdint.h>
 

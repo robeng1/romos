@@ -7,7 +7,7 @@
 #include "fs/file.h"
 #include "mm/heap/kernel_heap.h"
 #include "mm/paging/paging.h"
-#include "kernel.h"
+#include "kernel/kernel.h"
 
 // The current process that is running
 struct process_t *current_process = 0;

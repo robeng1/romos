@@ -1,7 +1,7 @@
 #include "kernel_heap.h"
 #include "heap.h"
 #include "config.h"
-#include "kernel.h"
+#include "kernel/kernel.h"
 #include "mm/memory.h"
 
 struct heap_t kernel_heap;

@@ -134,7 +134,7 @@ struct gdt_ptr_t gdt_ptr[ROMOS_TOTAL_GDT_SEGMENTS] = {
 void start_kernel()
 {
   term_init();
-
+  print("RomOS, the Operating System\n\n\n");
   memset(gdt_entries, 0x00, sizeof(gdt_entries));
   gdt_ptr_to_gdt(gdt_entries, gdt_ptr, ROMOS_TOTAL_GDT_SEGMENTS);
   // Load the gdt
@@ -169,5 +169,5 @@ void start_kernel()
   // Register the kernel commands
   isr80h_hookup_commands();
 
-  // print("Welcome to RomOS, the only Operating System you'll ever need\n\n\n");
+  
 }

@@ -4,7 +4,7 @@
 #include "string/string.h"
 #include "status.h"
 #include "config.h"
-#include "kernel.h"
+#include "kernel/kernel.h"
 
 void *isr80h_proc_cmd_process_load_start(struct interrupt_frame_t *frame)
 {

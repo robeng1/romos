@@ -1,5 +1,5 @@
 #include "gdt.h"    // This line includes the gdt.h header file, which contains the definitions of the 'gdt_entry' and 'gdt_ptr' structures.
-#include "kernel.h" // This line includes the kernel.h header file, which may contain other important definitions or functions for the OS kernel, such as 'panic' function.
+#include "kernel/kernel.h" // This line includes the kernel.h header file, which may contain other important definitions or functions for the OS kernel, such as 'panic' function.
 
 // Here we define a function that encodes a 'gdt_ptr' structure into a format that the CPU can understand.
 void encode_gdt_entry(uint8_t *target, struct gdt_ptr_t source)
