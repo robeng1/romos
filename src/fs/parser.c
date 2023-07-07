@@ -1,8 +1,8 @@
 #include "parser.h"                  // Include header file for parser functionality
 #include "kernel.h"                  // Include header file for kernel functionality
 #include "string/string.h"           // Include header file for string manipulation
-#include "memory/heap/kernel_heap.h" // Include header file for kernel heap functionality
-#include "memory/memory.h"           // Include header file for memory management
+#include "mm/heap/kernel_heap.h" // Include header file for kernel heap functionality
+#include "mm/memory.h"           // Include header file for memory management
 #include "status.h"                  // Include header file for status codes
 #include "config.h"                  // Include header file for configuration
 

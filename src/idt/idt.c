@@ -2,7 +2,7 @@
 #include "config.h"
 #include "io/io.h"
 #include "kernel.h"
-#include "memory/memory.h"
+#include "mm/memory.h"
 #include "task/task.h"
 #include "task/process.h"
 #include "status.h"

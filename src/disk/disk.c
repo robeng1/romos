@@ -2,7 +2,7 @@
 #include "io/io.h"         // Include header file for I/O operations
 #include "config.h"        // Include configuration header file
 #include "status.h"        // Include header file for status codes
-#include "memory/memory.h" // Include header file for memory operations
+#include "mm/memory.h" // Include header file for memory operations
 
 struct disk_t disk; // Declare a disk structure named "disk"
 

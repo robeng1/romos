@@ -4,35 +4,28 @@
 // Here we define a function that encodes a 'gdt_ptr' structure into a format that the CPU can understand.
 void encode_gdt_entry(uint8_t *target, struct gdt_ptr_t source)
 {
-  // Check whether the limit field of the source struct is too large for the processor's GDT limit field,
-  // which should be at most 20 bits wide. Panic (an assumed function that stops system execution) if the limit is invalid.
-  if ((source.limit > 65536) && ((source.limit & 0xFFF) != 0xFFF))
+  // Check the limit to make sure that it can be encoded
+  if (source.limit > 0xFFFFF)
   {
-    panic("encode_gdt_entry: Invalid argument\n");
+    panic("GDT cannot encode limits larger than 0xFFFFF");
   }
 
-  // Set the default granularity to 1 byte.
-  target[6] = 0x40;
-  // If the limit is larger than 65536, we need to scale it down by a factor of 4096 (shift it 12 bits to the right) and set the granularity to 4K.
-  if (source.limit > 65536)
-  {
-    source.limit = source.limit >> 12;
-    target[6] = 0xC0;
-  }
-
-  // Encode the limit into the GDT entry.
+  // Encode the limit
   target[0] = source.limit & 0xFF;
   target[1] = (source.limit >> 8) & 0xFF;
-  target[6] |= (source.limit >> 16) & 0x0F; // The 4 least significant bits of the limit are stored in the most significant nibble of the 6th byte.
+  target[6] = (source.limit >> 16) & 0x0F;
 
-  // Encode the base address into the GDT entry.
+  // Encode the base
   target[2] = source.base & 0xFF;
   target[3] = (source.base >> 8) & 0xFF;
   target[4] = (source.base >> 16) & 0xFF;
-  target[7] = (source.base >> 24) & 0xFF; // The 4 most significant bits of the base are stored in the 7th byte.
+  target[7] = (source.base >> 24) & 0xFF;
 
-  // Set the type of the GDT entry.
-  target[5] = source.type;
+  // Encode the access byte
+  target[5] = source.access_byte;
+
+  // Encode the flags
+  target[6] |= (source.flags << 4);
 }
 
 // Here we define a function that converts an array of 'gdt_ptr' structures to an array of 'gdt_entry' structures.

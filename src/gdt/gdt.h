@@ -17,13 +17,14 @@ struct gdt_entry_t
 // This structure represents a GDT pointer. It is used to load the GDT into the GDTR register.
 struct gdt_ptr_t
 {
-  uint32_t base;  // The base address of the GDT.
-  uint32_t limit; // The size of the GDT.
-  uint8_t type;   // The type of descriptor (code segment, data segment, etc.)
+  uint32_t base;       // The base address of the GDT.
+  uint32_t limit;      // The size of the GDT.
+  uint8_t access_byte; // The access byte
+  uint8_t flags;       // The flags
 };
 
 // This function is likely used to load the GDT into the GDTR register.
-extern void gdt_load(struct gdt_entry_t *gdt, int size);
+extern void gdt_load(int size, struct gdt_entry_t *gdt);
 
 // This function convert a higher-level, more structured representation of the GDT into the packed format used by the hardware.
 void gdt_ptr_to_gdt(struct gdt_entry_t *gdt, struct gdt_ptr_t *gdt_ptr, int total_entries);

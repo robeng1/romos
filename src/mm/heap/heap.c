@@ -1,7 +1,7 @@
 #include "heap.h"
 #include "kernel.h"
 #include "status.h"
-#include "memory/memory.h"
+#include "mm/memory.h"
 #include <stdbool.h>
 
 static int heap_validate_table(void *ptr, void *end, struct heap_table_t *table)
@@ -72,43 +72,52 @@ static int heap_get_entry_type(HEAP_BLOCK_TABLE_ENTRY entry)
 int heap_get_start_block(struct heap_t *heap, uint32_t total_blocks)
 {
   struct heap_table_t *table = heap->table;
+  int window_size = 0;
+  int window_start = -1;
 
-  size_t start = 0; // Starting index of the subarray
-  size_t end = 0;   // Ending index of the subarray
-  int count = 0;    // Count of free entries
-
-  // Find the initial subarray that satisfies the block size
-  while (end < table->total)
+  for (size_t i = 0; i < table->total; i++)
   {
-    if (heap_get_entry_type(table->entries[end]) == HEAP_BLOCK_TABLE_ENTRY_FREE)
+    if (heap_get_entry_type(table->entries[i]) != HEAP_BLOCK_TABLE_ENTRY_FREE)
     {
-      count++;
+      // Reset the window when encountering a used block
+      window_size = 0;
+      window_start = -1;
     }
-
-    if (count == total_blocks)
+    else
     {
-      break;
-    }
-
-    while (count > total_blocks)
-    {
-      if (heap_get_entry_type(table->entries[start]) == HEAP_BLOCK_TABLE_ENTRY_FREE)
+      // Expand the window when encountering a free block
+      if (window_start == -1)
       {
-        count--;
+        window_start = i;
       }
-      start++;
+      window_size++;
+
+      // Stop when the window size reaches the required number of blocks
+      if (window_size == total_blocks)
+      {
+        // Check if the block immediately after the found region is free or used
+        if (i + 1 < table->total && heap_get_entry_type(table->entries[i + 1]) != HEAP_BLOCK_TABLE_ENTRY_FREE)
+        {
+          // If it's used, reset the window and continue the search
+          window_size = 0;
+          window_start = -1;
+        }
+        else
+        {
+          // If it's free, break the loop
+          break;
+        }
+      }
     }
-    end++;
   }
 
-  if (count == total_blocks)
-  {
-    return (int)start;
-  }
-  else
+  // Return an error if no suitable window was found
+  if (window_start == -1)
   {
     return -ENOMEM;
   }
+
+  return window_start;
 }
 
 void *heap_block_to_address(struct heap_t *heap, int block)

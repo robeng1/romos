@@ -1,7 +1,7 @@
 #include "file.h"                    // Include the "file.h" header file
 #include "config.h"                  // Include the "config.h" header file
-#include "memory/memory.h"           // Include the "memory/memory.h" header file
-#include "memory/heap/kernel_heap.h" // Include the "memory/heap/kernel_heap.h" header file
+#include "mm/memory.h"           // Include the "memory/memory.h" header file
+#include "mm/heap/kernel_heap.h" // Include the "memory/heap/kernel_heap.h" header file
 #include "string/string.h"           // Include the "string/string.h" header file
 #include "disk/disk.h"               // Include the "disk/disk.h" header file
 #include "fat/fat16.h"               // Include the "fat/fat16.h" header file

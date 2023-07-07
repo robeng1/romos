@@ -3,10 +3,10 @@
 #include "status.h"
 #include "config.h"
 #include "process.h"
-#include "memory/heap/kernel_heap.h"
-#include "memory/memory.h"
+#include "mm/heap/kernel_heap.h"
+#include "mm/memory.h"
 #include "string/string.h"
-#include "memory/paging/paging.h"
+#include "mm/paging/paging.h"
 #include "idt/idt.h"
 
 // The current task that is running

@@ -2,11 +2,11 @@
 #include "config.h"
 #include "status.h"
 #include "task/task.h"
-#include "memory/memory.h"
+#include "mm/memory.h"
 #include "string/string.h"
 #include "fs/file.h"
-#include "memory/heap/kernel_heap.h"
-#include "memory/paging/paging.h"
+#include "mm/heap/kernel_heap.h"
+#include "mm/paging/paging.h"
 #include "kernel.h"
 
 // The current process that is running
@@ -401,7 +401,6 @@ static int process_map_elf(struct process_t *process)
   // }
   return res;
 }
-
 
 int process_map_memory(struct process_t *process)
 {

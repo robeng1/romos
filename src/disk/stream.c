@@ -1,5 +1,5 @@
 #include "stream.h"                  // Include header file for stream-related functionality
-#include "memory/heap/kernel_heap.h" // Include header file for kernel heap functionality
+#include "mm/heap/kernel_heap.h" // Include header file for kernel heap functionality
 #include "config.h"                  // Include configuration header file
 
 #include <stdbool.h> // Include header file for boolean data type
