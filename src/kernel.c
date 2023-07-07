@@ -107,7 +107,7 @@ struct gdt_ptr_t gdt_ptr[ROMOS_TOTAL_GDT_SEGMENTS] = {
 void start_kernel()
 {
   term_init();
-
+  print("Welcome to RomOS, the only Operating System you'll ever need\n\n\n");
   memset(gdt_entries, 0x00, sizeof(gdt_entries));
   gdt_ptr_to_gdt(gdt_entries, gdt_ptr, ROMOS_TOTAL_GDT_SEGMENTS);
 
@@ -141,12 +141,10 @@ void start_kernel()
   paging_switch(kernel_chunk);
 
   // Enable paging
-  enable_paging();
+  // enable_paging();
 
   // Register the kernel commands
   isr80h_hookup_commands();
 
   enable_interrupts();
-
-  print("Welcome to RomOS, the only Operating System you'll ever need");
 }
