@@ -159,7 +159,7 @@ struct filesystem_t *fat16_init()
 
 static void fat16_init_private(struct disk_t *disk, struct fat_private_t *private)
 {
-  memset(private, 0, sizeof(struct fat_private_t));
+  memset(private, 0x00, sizeof(struct fat_private_t));
   private
       ->cluster_read_stream = new_disk_stream(disk->id);
   private
@@ -274,6 +274,7 @@ err_out:
 
 int fat16_resolve(struct disk_t *disk)
 {
+  
   int res = 0;
   struct fat_private_t *fat_private = kernel_zalloc(sizeof(struct fat_private_t));
   fat16_init_private(disk, fat_private);
@@ -287,7 +288,7 @@ int fat16_resolve(struct disk_t *disk)
     res = -ENOMEM;
     goto out;
   }
-
+  
   if (disk_stream_read(stream, &fat_private->header, sizeof(fat_private->header)) != ALL_OK)
   {
     res = -EIO;
@@ -300,12 +301,13 @@ int fat16_resolve(struct disk_t *disk)
     goto out;
   }
 
+  
   if (fat16_get_root_directory(disk, fat_private, &fat_private->root_directory) != ALL_OK)
   {
     res = -EIO;
     goto out;
   }
-
+  
 out:
   if (stream)
   {

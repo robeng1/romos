@@ -8,6 +8,8 @@
 #include "mm/heap/kernel_heap.h"
 #include "mm/paging/paging.h"
 #include "kernel/kernel.h"
+#include "loaders/elf/elf.h"
+#include "loaders/elf/loader.h"
 
 // The current process that is running
 struct process_t *current_process = 0;
@@ -139,7 +141,7 @@ int process_free_binary_data(struct process_t *process)
 
 int process_free_elf_data(struct process_t *process)
 {
-  // elf_close(process->elf_file);
+  elf_close(process->elf_file);
   return 0;
 }
 
@@ -345,8 +347,8 @@ out:
 static int process_load_elf(const char *filename, struct process_t *process)
 {
   int res = 0;
-  struct elf_file *elf_file = 0;
-  // res = elf_load(filename, &elf_file);
+  struct elf_file_t *elf_file = 0;
+  res = elf_load(filename, &elf_file);
   if (ISERR(res))
   {
     goto out;
@@ -381,24 +383,24 @@ static int process_map_elf(struct process_t *process)
 {
   int res = 0;
 
-  // struct elf_file *elf_file = process->elf_file;
-  // struct elf_header *header = elf_header(elf_file);
-  // struct elf32_phdr *phdrs = elf_pheader(header);
-  // for (int i = 0; i < header->e_phnum; i++)
-  // {
-  //   struct elf32_phdr *phdr = &phdrs[i];
-  //   void *phdr_phys_address = elf_phdr_phys_address(elf_file, phdr);
-  //   int flags = PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL;
-  //   if (phdr->p_flags & PF_W)
-  //   {
-  //     flags |= PAGING_IS_WRITEABLE;
-  //   }
-  //   res = paging_map_virtual_to_physical_addresses(process->task->page_directory, paging_align_to_lower_page((void *)phdr->p_vaddr), paging_align_to_lower_page(phdr_phys_address), paging_align_address(phdr_phys_address + phdr->p_memsz), flags);
-  //   if (ISERR(res))
-  //   {
-  //     break;
-  //   }
-  // }
+  struct elf_file_t *elf_file = process->elf_file;
+  struct elf_header_t *header = elf_header(elf_file);
+  struct elf32_phdr_t *phdrs = elf_pheader(header);
+  for (int i = 0; i < header->e_phnum; i++)
+  {
+    struct elf32_phdr_t *phdr = &phdrs[i];
+    void *phdr_phys_address = elf_phdr_phys_address(elf_file, phdr);
+    int flags = PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL;
+    if (phdr->p_flags & PF_W)
+    {
+      flags |= PAGING_IS_WRITEABLE;
+    }
+    res = paging_map_virtual_to_physical_addresses(process->task->page_directory, paging_align_to_lower_page((void *)phdr->p_vaddr), paging_align_to_lower_page(phdr_phys_address), paging_align_address(phdr_phys_address + phdr->p_memsz), flags);
+    if (ISERR(res))
+    {
+      break;
+    }
+  }
   return res;
 }
 

@@ -48,7 +48,7 @@ struct process_t
   {
     // The physical pointer to the process memory.
     void *ptr;
-    struct elf_file *elf_file;
+    struct elf_file_t *elf_file;
   };
 
   // The physical pointer to the stack memory

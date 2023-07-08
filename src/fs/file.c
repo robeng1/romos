@@ -51,14 +51,14 @@ static void fs_static_load()
 // Function to load the filesystems
 void fs_load()
 {
-  memset(filesystems, 0, sizeof(filesystems));
+  memset(filesystems, 0x00, sizeof(filesystems));
   fs_static_load();
 }
 
 // Function to initialize the filesystem
 void fs_init()
 {
-  memset(file_descriptors, 0, sizeof(file_descriptors));
+  memset(file_descriptors, 0x00, sizeof(file_descriptors));
   fs_load();
 }
 
@@ -107,6 +107,7 @@ static struct file_descriptor_t *file_get_descriptor(int fd)
 // Function to resolve the filesystem for a disk
 struct filesystem_t *fs_resolve(struct disk_t *disk)
 {
+
   struct filesystem_t *fs = 0;
   for (int i = 0; i < MAX_FILESYSTEMS; i++)
   {
@@ -116,7 +117,6 @@ struct filesystem_t *fs_resolve(struct disk_t *disk)
       break;
     }
   }
-
   return fs;
 }
 

@@ -1,6 +1,7 @@
-#include <string.h>
 #include "status.h"
 #include "blkm.h"
+#include "mm/memory.h"
+#include "config.h"
 
 #define MEMORY_SIZE (1024 * 1024 * 1024) // Total memory size (1GB)
 #define BLOCK_SIZE (4 * 1024)            // Size of each memory block (4KB)
@@ -57,7 +58,7 @@ void *mem_alloc(size_t size)
       blocks_found = 0; // Reset the count
     }
   }
-  return -ENOMEM; // No free blocks large enough
+  return 0; // No free blocks large enough
 }
 
 // Free a block of memory

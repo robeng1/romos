@@ -28,7 +28,7 @@ void *isr80h_proc_cmd_process_load_start(struct interrupt_frame_t *frame)
   }
 
   task_switch(process->task);
-  task_return(&process->task->registers_state);
+  task_return(&process->task->registers);
 
 out:
   return 0;
@@ -63,7 +63,7 @@ void *isr80h_proc_cmd_invoke_system_command(struct interrupt_frame_t *frame)
   }
 
   task_switch(process->task);
-  task_return(&process->task->registers_state);
+  task_return(&process->task->registers);
 
   return 0;
 }

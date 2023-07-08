@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "kernel.h"
-#include "string/string.h"
 #include "fs/file.h"
 #include "disk/disk.h"
 #include "fs/parser.h"
@@ -15,6 +14,8 @@
 #include "mm/heap/kernel_heap.h"
 #include "mm/paging/paging.h"
 #include "mm/blkm/blkm.h"
+#include "string/string.h"
+#include "drivers/keyboard/keyboard.h"
 
 uint16_t *vram = 0;
 uint16_t t_row = 0;
@@ -134,7 +135,7 @@ struct gdt_ptr_t gdt_ptr[TOTAL_GDT_SEGMENTS] = {
 void start_kernel()
 {
   term_init();
-  print("RomOS, the Operating System\n\n\n");
+  
   memset(gdt_entries, 0x00, sizeof(gdt_entries));
   gdt_ptr_to_gdt(gdt_entries, gdt_ptr, TOTAL_GDT_SEGMENTS);
   // Load the gdt
@@ -148,6 +149,7 @@ void start_kernel()
 
   // Search and initialize the disks
   disk_search_and_init();
+  print("RomOS, the Operating System\n\n\n");
 
   // Initialize the interrupt descriptor table
   init_idt();
@@ -168,4 +170,7 @@ void start_kernel()
 
   // Register the kernel commands
   isr80h_hookup_commands();
+
+  // Initialize all the system keyboards
+  keyboard_init();
 }

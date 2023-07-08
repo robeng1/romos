@@ -8,6 +8,7 @@
 #include "string/string.h"
 #include "mm/paging/paging.h"
 #include "idt/idt.h"
+#include "loaders/elf/loader.h"
 
 // The current task that is running
 struct task_t *current_task = 0;
@@ -113,7 +114,7 @@ void task_next()
   }
 
   task_switch(next_task);
-  task_return(&next_task->registers_state);
+  task_return(&next_task->registers);
 }
 
 int task_switch(struct task_t *task)
@@ -125,18 +126,18 @@ int task_switch(struct task_t *task)
 
 void task_save_state(struct task_t *task, struct interrupt_frame_t *frame)
 {
-  task->registers_state.ip = frame->ip;
-  task->registers_state.cs = frame->cs;
-  task->registers_state.flags = frame->flags;
-  task->registers_state.esp = frame->esp;
-  task->registers_state.ss = frame->ss;
-  task->registers_state.eax = frame->eax;
-  task->registers_state.ebp = frame->ebp;
-  task->registers_state.ebx = frame->ebx;
-  task->registers_state.ecx = frame->ecx;
-  task->registers_state.edi = frame->edi;
-  task->registers_state.edx = frame->edx;
-  task->registers_state.esi = frame->esi;
+  task->registers.ip = frame->ip;
+  task->registers.cs = frame->cs;
+  task->registers.flags = frame->flags;
+  task->registers.esp = frame->esp;
+  task->registers.ss = frame->ss;
+  task->registers.eax = frame->eax;
+  task->registers.ebp = frame->ebp;
+  task->registers.ebx = frame->ebx;
+  task->registers.ecx = frame->ecx;
+  task->registers.edi = frame->edi;
+  task->registers.edx = frame->edx;
+  task->registers.esi = frame->esi;
 }
 
 int copy_string_from_task(struct task_t *task, void *virtual_addr, void *physical_addr, int max)
@@ -208,7 +209,7 @@ void task_run_first_ever_task()
   }
 
   task_switch(task_head);
-  task_return(&task_head->registers_state);
+  task_return(&task_head->registers);
 }
 
 int task_init(struct task_t *task, struct process_t *process)
@@ -221,15 +222,15 @@ int task_init(struct task_t *task, struct process_t *process)
     return -EIO;
   }
 
-  task->registers_state.ip = PROGRAM_VIRTUAL_ADDRESS;
-  // if (process->filetype == PROCESS_FILETYPE_ELF)
-  // {
-  //   task->registers.ip = elf_header(process->elf_file)->e_entry;
-  // }
+  task->registers.ip = PROGRAM_VIRTUAL_ADDRESS;
+  if (process->filetype == PROCESS_FILETYPE_ELF)
+  {
+    task->registers.ip = elf_header(process->elf_file)->e_entry;
+  }
 
-  task->registers_state.ss = USER_DATA_SEGMENT;
-  task->registers_state.cs = USER_CODE_SEGMENT;
-  task->registers_state.esp = PROGRAM_VIRTUAL_STACK_ADDRESS_START;
+  task->registers.ss = USER_DATA_SEGMENT;
+  task->registers.cs = USER_CODE_SEGMENT;
+  task->registers.esp = PROGRAM_VIRTUAL_STACK_ADDRESS_START;
 
   task->process = process;
 
@@ -240,7 +241,7 @@ void *task_get_stack_item(struct task_t *task, int index)
 {
   void *result = 0;
 
-  uint32_t *sp_ptr = (uint32_t *)task->registers_state.esp;
+  uint32_t *sp_ptr = (uint32_t *)task->registers.esp;
 
   // Switch to the given tasks page
   task_page_task(task);

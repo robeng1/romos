@@ -1,7 +1,7 @@
-#include "disk.h"          // Include header file for disk-related functionality
-#include "io/io.h"         // Include header file for I/O operations
-#include "config.h"        // Include configuration header file
-#include "status.h"        // Include header file for status codes
+#include "disk.h"      // Include header file for disk-related functionality
+#include "io/io.h"     // Include header file for I/O operations
+#include "config.h"    // Include configuration header file
+#include "status.h"    // Include header file for status codes
 #include "mm/memory.h" // Include header file for memory operations
 
 struct disk_t disk; // Declare a disk structure named "disk"
@@ -37,10 +37,10 @@ int disk_read_sector(int lba, int total, void *buf)
 
 void disk_search_and_init()
 {
-  memset(&disk, 0, sizeof(disk));      // Set the disk structure to all zeros
-  disk.type = DISK_TYPE_REAL;      // Set the disk type to "real" in the disk structure
-  disk.sector_size = SECTOR_SIZE;  // Set the sector size in the disk structure
-  disk.id = 0;                           // Set the disk ID in the disk structure
+  memset(&disk, 0x00, sizeof(disk));   // Set the disk structure to all zeros
+  disk.type = DISK_TYPE_REAL;          // Set the disk type to "real" in the disk structure
+  disk.sector_size = SECTOR_SIZE;      // Set the sector size in the disk structure
+  disk.id = 0;                         // Set the disk ID in the disk structure
   disk.filesystem = fs_resolve(&disk); // Resolve the filesystem for the disk
 }
 

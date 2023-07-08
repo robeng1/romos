@@ -10,7 +10,7 @@ struct interrupt_frame_t;
 // It's often used in context switching, where the operating system needs to save the state of the current process so it can be restored later.
 // The specific registers and their uses can vary depending on the CPU architecture.
 // This structure appears to be for an x86 CPU.
-struct registers_state_t
+struct register_state_t
 {
   uint32_t edi;   // Destination Index: used in string manipulation and memory operations
   uint32_t esi;   // Source Index: used in string manipulation and memory operations
@@ -35,7 +35,7 @@ struct task_t
   struct paging_4GB_chunk_t *page_directory;
 
   // The registers of the task when the task is not running
-  struct registers_state_t registers_state;
+  struct register_state_t registers;
 
   // The process of the task
   struct process_t *process;
@@ -58,8 +58,8 @@ int task_page_task(struct task_t *task);
 
 void task_run_first_ever_task();
 
-extern void task_return(struct registers_state_t *regs);
-extern void restore_registers_state_t(struct registers_state_t *regs);
+extern void task_return(struct register_state_t *regs);
+extern void restore_registers_state_t(struct register_state_t *regs);
 extern void user_registers();
 
 void task_current_save_state(struct interrupt_frame_t *frame);
