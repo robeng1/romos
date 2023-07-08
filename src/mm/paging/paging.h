@@ -20,8 +20,6 @@ struct paging_4GB_chunk_t
   uint32_t *directory_entry; // Pointer to the page directory entry
 };
 
-// Function declarations
-void paging_init();
 // Allocate and initialize a new 4GB paging chunk with the specified flags
 struct paging_4GB_chunk_t *paging_new_4GB(uint8_t flags);
 

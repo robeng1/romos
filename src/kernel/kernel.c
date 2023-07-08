@@ -149,10 +149,10 @@ void start_kernel()
 
   // Search and initialize the disks
   disk_search_and_init();
-  print("RomOS, the Operating System\n\n\n");
-
+  
   // Initialize the interrupt descriptor table
   init_idt();
+ 
 
   // Setup the TSS
   memset(&kernel_tss, 0x00, sizeof(kernel_tss));
@@ -166,11 +166,12 @@ void start_kernel()
   // Switch to kernel paging chunk
   paging_switch(kernel_chunk);
   // Enable paging
-  paging_init();
-
+  enable_paging();
+  print("RomOS, the Operating System\n\n\n");
   // Register the kernel commands
   isr80h_hookup_commands();
 
   // Initialize all the system keyboards
   keyboard_init();
+  
 }

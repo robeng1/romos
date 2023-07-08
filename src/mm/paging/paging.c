@@ -1,17 +1,10 @@
 #include "idt/idt.h"
 #include "paging.h"
 #include "mm/heap/kernel_heap.h" // Include for memory allocation functions
-#include "status.h"                  // Include for error codes
+#include "status.h"              // Include for error codes
 
 // Load the page directory into the processor's control registers (external assembly function)
 extern void load_page_directory(uint32_t *directory);
-
-void paging_init()
-{
-  disable_interrupts();
-  enable_paging();
-  enable_interrupts();
-}
 
 // Global variable to store the current page directory
 static uint32_t *current_page_directory = 0;

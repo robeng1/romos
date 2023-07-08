@@ -242,20 +242,20 @@ int fat16_get_root_directory(struct disk_t *disk, struct fat_private_t *fat_priv
     res = -ENOMEM;
     goto err_out;
   }
-
+  
   struct disk_stream_t *stream = fat_private->directory_stream;
   if (disk_stream_seek(stream, fat16_sector_to_absolute(disk, root_dir_sector_pos)) != ALL_OK)
   {
     res = -EIO;
     goto err_out;
   }
-
+  
   if (disk_stream_read(stream, dir, root_dir_size) != ALL_OK)
   {
     res = -EIO;
     goto err_out;
   }
-
+  
   directory->item = dir;
   directory->total = total_items;
   directory->sector_pos = root_dir_sector_pos;
