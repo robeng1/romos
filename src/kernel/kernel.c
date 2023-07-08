@@ -6,6 +6,7 @@
 #include "fs/parser.h"
 #include "idt/idt.h"
 #include "task/tss.h"
+#include "task/process.h"
 #include "gdt/gdt.h"
 #include "config.h"
 #include "status.h"
@@ -153,7 +154,6 @@ void start_kernel()
   // Initialize the interrupt descriptor table
   init_idt();
  
-
   // Setup the TSS
   memset(&kernel_tss, 0x00, sizeof(kernel_tss));
   kernel_tss.esp0 = 0x600000;
@@ -167,11 +167,17 @@ void start_kernel()
   paging_switch(kernel_chunk);
   // Enable paging
   enable_paging();
-  print("RomOS, the Operating System\n\n\n");
+
   // Register the kernel commands
   isr80h_hookup_commands();
 
   // Initialize all the system keyboards
   keyboard_init();
-  
+
+  struct process_t *process = 0;
+  int res = process_load_switch("0:/shell.elf", &process);
+  if (res != ALL_OK)
+  {
+    panic("No shell at the moment");
+  }
 }
