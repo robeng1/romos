@@ -9,14 +9,14 @@
 void *isr80h_proc_cmd_process_load_start(struct interrupt_frame_t *frame)
 {
   void *filename_user_ptr = task_get_stack_item(task_current(), 0);
-  char filename[ROMOS_MAX_PATH];
+  char filename[MAX_PATH];
   int res = copy_string_from_task(task_current(), filename_user_ptr, filename, sizeof(filename));
   if (res < 0)
   {
     goto out;
   }
 
-  char path[ROMOS_MAX_PATH];
+  char path[MAX_PATH];
   strcpy(path, "0:/");
   strcpy(path + 3, filename);
 
@@ -45,7 +45,7 @@ void *isr80h_proc_cmd_invoke_system_command(struct interrupt_frame_t *frame)
   struct command_argument_t *root_command_argument = &arguments[0];
   const char *program_name = root_command_argument->argument;
 
-  char path[ROMOS_MAX_PATH];
+  char path[MAX_PATH];
   strcpy(path, "0:/");
   strncpy(path + 3, program_name, sizeof(path));
 

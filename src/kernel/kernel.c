@@ -90,13 +90,13 @@ void switch_to_kernel_page()
   paging_switch(kernel_chunk);
 }
 
-struct tss_entry_t tss;
-struct gdt_entry_t gdt_entries[ROMOS_TOTAL_GDT_SEGMENTS];
 
+struct tss_entry_t kernel_tss;
+struct gdt_entry_t gdt_entries[TOTAL_GDT_SEGMENTS];
 // This array defines the Global Descriptor Table (GDT) for the system.
 // The GDT is a table in memory that defines the characteristics of the various memory segments used by the system, including their base address, limit, and access rights.
 // The processor uses the GDT to translate logical addresses into physical addresses.
-struct gdt_ptr_t gdt_ptr[ROMOS_TOTAL_GDT_SEGMENTS] = {
+struct gdt_ptr_t gdt_ptr[TOTAL_GDT_SEGMENTS] = {
     // NULL Segment
     // This segment is not used, but is required as the first entry in the GDT.
     {.base = 0x00, .limit = 0x00000000, .access_byte = 0x00, .flags = 0x00},
@@ -129,36 +129,36 @@ struct gdt_ptr_t gdt_ptr[ROMOS_TOTAL_GDT_SEGMENTS] = {
     // This segment is used for the Task State Segment (TSS).
     // The access byte 0x89 means the segment is present (0x80), it's an available TSS (0x09).
     // The flags 0x0 means the limit is specified in byte units and it's a 16-bit segment.
-    {.base = (uint32_t)&tss, .limit = sizeof(tss), .access_byte = 0x89, .flags = 0x0}};
+    {.base = (uint32_t)&kernel_tss, .limit = sizeof(kernel_tss), .access_byte = 0x89, .flags = 0x0}};
 
 void start_kernel()
 {
   term_init();
   print("RomOS, the Operating System\n\n\n");
   memset(gdt_entries, 0x00, sizeof(gdt_entries));
-  gdt_ptr_to_gdt(gdt_entries, gdt_ptr, ROMOS_TOTAL_GDT_SEGMENTS);
+  gdt_ptr_to_gdt(gdt_entries, gdt_ptr, TOTAL_GDT_SEGMENTS);
   // Load the gdt
   gdt_load(sizeof(gdt_entries), gdt_entries);
-  
+
   // Initialize the heap
   kernel_heap_init();
 
   // Initialize filesystems
   fs_init();
-  
+
   // Search and initialize the disks
   disk_search_and_init();
 
   // Initialize the interrupt descriptor table
   init_idt();
-  
+
   // Setup the TSS
-  memset(&tss, 0x00, sizeof(tss));
-  tss.esp0 = 0x600000;
-  tss.ss0 = KERNEL_DATA_SELECTOR;
+  memset(&kernel_tss, 0x00, sizeof(kernel_tss));
+  kernel_tss.esp0 = 0x600000;
+  kernel_tss.ss0 = KERNEL_DATA_SELECTOR;
   // Load the TSS
   tss_load(0x28);
-  
+
   // Setup paging
   kernel_chunk = paging_new_4GB(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
   // Switch to kernel paging chunk
@@ -168,6 +168,4 @@ void start_kernel()
 
   // Register the kernel commands
   isr80h_hookup_commands();
-
-  
 }

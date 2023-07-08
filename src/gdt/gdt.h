@@ -2,8 +2,7 @@
 #define GDT_H // This line defines the preprocessor variable GDT_H. It signals that this file has been included.
 
 #include <stdint.h> // This line includes the stdint.h header file, which defines integer types with specific widths.
-
-// Here begins the declaration of a structure named gdt_entry. It represents a single entry in the Global Descriptor Table.
+// It represents a single entry in the Global Descriptor Table.
 struct gdt_entry_t
 {
   uint16_t segment;        // This field holds the size of the segment.
@@ -23,9 +22,8 @@ struct gdt_ptr_t
   uint8_t flags;       // The flags
 };
 
-// This function is likely used to load the GDT into the GDTR register.
+// This function is used to load the GDT into the GDTR register.
 extern void gdt_load(int size, struct gdt_entry_t *gdt);
-
 // This function convert a higher-level, more structured representation of the GDT into the packed format used by the hardware.
 void gdt_ptr_to_gdt(struct gdt_entry_t *gdt, struct gdt_ptr_t *gdt_ptr, int total_entries);
 

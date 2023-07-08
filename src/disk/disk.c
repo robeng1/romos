@@ -38,8 +38,8 @@ int disk_read_sector(int lba, int total, void *buf)
 void disk_search_and_init()
 {
   memset(&disk, 0, sizeof(disk));      // Set the disk structure to all zeros
-  disk.type = ROMOS_DISK_TYPE_REAL;      // Set the disk type to "real" in the disk structure
-  disk.sector_size = ROMOS_SECTOR_SIZE;  // Set the sector size in the disk structure
+  disk.type = DISK_TYPE_REAL;      // Set the disk type to "real" in the disk structure
+  disk.sector_size = SECTOR_SIZE;  // Set the sector size in the disk structure
   disk.id = 0;                           // Set the disk ID in the disk structure
   disk.filesystem = fs_resolve(&disk); // Resolve the filesystem for the disk
 }

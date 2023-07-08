@@ -11,10 +11,10 @@
 #include <stdint.h>
 
 // Define some constants
-#define ROMOS_FAT16_SIGNATURE 0x29      // The FAT16 signature
-#define ROMOS_FAT16_FAT_ENTRY_SIZE 0x02 // The size of a FAT entry in FAT16
-#define ROMOS_FAT16_BAD_SECTOR 0xFF7    // Indication of a bad sector in FAT16
-#define ROMOS_FAT16_UNUSED 0x00         // Indication of an unused sector in FAT16
+#define FAT16_SIGNATURE 0x29      // The FAT16 signature
+#define FAT16_FAT_ENTRY_SIZE 0x02 // The size of a FAT entry in FAT16
+#define FAT16_BAD_SECTOR 0xFF7    // Indication of a bad sector in FAT16
+#define FAT16_UNUSED 0x00         // Indication of an unused sector in FAT16
 
 // Define a type for FAT items
 typedef unsigned int FAT_ITEM_TYPE;
@@ -36,7 +36,7 @@ struct fat_header_extended_t
 {
   uint8_t drive_number;         // Drive number
   uint8_t win_nt_bit;           // Windows NT specific bit
-  uint8_t signature;            // Signature, should be ROMOS_FAT16_SIGNATURE
+  uint8_t signature;            // Signature, should be FAT16_SIGNATURE
   uint32_t volume_id;           // Volume ID
   uint8_t volume_id_string[11]; // Volume ID as string
   uint8_t system_id_string[8];  // System ID as string
@@ -185,7 +185,7 @@ int fat16_get_total_items_for_directory(struct disk_t *disk, uint32_t directory_
   int i = 0;
   int directory_start_pos = directory_start_sector * disk->sector_size;
   struct disk_stream_t *stream = fat_private->directory_stream;
-  if (disk_stream_seek(stream, directory_start_pos) != ROMOS_ALL_OK)
+  if (disk_stream_seek(stream, directory_start_pos) != ALL_OK)
   {
     res = -EIO;
     goto out;
@@ -193,7 +193,7 @@ int fat16_get_total_items_for_directory(struct disk_t *disk, uint32_t directory_
 
   while (1)
   {
-    if (disk_stream_read(stream, &item, sizeof(item)) != ROMOS_ALL_OK)
+    if (disk_stream_read(stream, &item, sizeof(item)) != ALL_OK)
     {
       res = -EIO;
       goto out;
@@ -244,13 +244,13 @@ int fat16_get_root_directory(struct disk_t *disk, struct fat_private_t *fat_priv
   }
 
   struct disk_stream_t *stream = fat_private->directory_stream;
-  if (disk_stream_seek(stream, fat16_sector_to_absolute(disk, root_dir_sector_pos)) != ROMOS_ALL_OK)
+  if (disk_stream_seek(stream, fat16_sector_to_absolute(disk, root_dir_sector_pos)) != ALL_OK)
   {
     res = -EIO;
     goto err_out;
   }
 
-  if (disk_stream_read(stream, dir, root_dir_size) != ROMOS_ALL_OK)
+  if (disk_stream_read(stream, dir, root_dir_size) != ALL_OK)
   {
     res = -EIO;
     goto err_out;
@@ -288,7 +288,7 @@ int fat16_resolve(struct disk_t *disk)
     goto out;
   }
 
-  if (disk_stream_read(stream, &fat_private->header, sizeof(fat_private->header)) != ROMOS_ALL_OK)
+  if (disk_stream_read(stream, &fat_private->header, sizeof(fat_private->header)) != ALL_OK)
   {
     res = -EIO;
     goto out;
@@ -300,7 +300,7 @@ int fat16_resolve(struct disk_t *disk)
     goto out;
   }
 
-  if (fat16_get_root_directory(disk, fat_private, &fat_private->root_directory) != ROMOS_ALL_OK)
+  if (fat16_get_root_directory(disk, fat_private, &fat_private->root_directory) != ALL_OK)
   {
     res = -EIO;
     goto out;
@@ -395,7 +395,7 @@ static int fat16_get_fat_entry(struct disk_t *disk, int cluster)
   }
 
   uint32_t fat_table_position = fat16_get_first_fat_sector(private) * disk->sector_size;
-  res = disk_stream_seek(stream, fat_table_position * (cluster * ROMOS_FAT16_FAT_ENTRY_SIZE));
+  res = disk_stream_seek(stream, fat_table_position * (cluster * FAT16_FAT_ENTRY_SIZE));
   if (res < 0)
   {
     goto out;
@@ -433,7 +433,7 @@ static int fat16_get_cluster_for_offset(struct disk_t *disk, int starting_cluste
     }
 
     // Sector is marked as bad?
-    if (entry == ROMOS_FAT16_BAD_SECTOR)
+    if (entry == FAT16_BAD_SECTOR)
     {
       res = -EIO;
       goto out;
@@ -477,13 +477,13 @@ static int fat16_read_internal_from_stream(struct disk_t *disk, struct disk_stre
   int starting_pos = (starting_sector * disk->sector_size) + offset_from_cluster;
   int total_to_read = total > size_of_cluster_bytes ? size_of_cluster_bytes : total;
   res = disk_stream_seek(stream, starting_pos);
-  if (res != ROMOS_ALL_OK)
+  if (res != ALL_OK)
   {
     goto out;
   }
 
   res = disk_stream_read(stream, out, total_to_read);
-  if (res != ROMOS_ALL_OK)
+  if (res != ALL_OK)
   {
     goto out;
   }
@@ -566,13 +566,13 @@ struct fat_directory_t *fat16_load_fat_directory(struct disk_t *disk, struct fat
   }
 
   res = fat16_read_internal(disk, cluster, 0x00, directory_size, directory->item);
-  if (res != ROMOS_ALL_OK)
+  if (res != ALL_OK)
   {
     goto out;
   }
 
 out:
-  if (res != ROMOS_ALL_OK)
+  if (res != ALL_OK)
   {
     fat16_free_directory(directory);
   }
@@ -601,7 +601,7 @@ struct fat_item_t *fat16_new_fat_item_for_directory_item(struct disk_t *disk, st
 struct fat_item_t *fat16_find_item_in_directory(struct disk_t *disk, struct fat_directory_t *directory, const char *name)
 {
   struct fat_item_t *f_item = 0;
-  char tmp_filename[ROMOS_MAX_PATH];
+  char tmp_filename[MAX_PATH];
   for (int i = 0; i < directory->total; i++)
   {
     fat16_get_full_relative_filename(&directory->item[i], tmp_filename, sizeof(tmp_filename));

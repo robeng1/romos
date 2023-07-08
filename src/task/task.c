@@ -34,7 +34,7 @@ struct task_t *new_task(struct process_t *process)
   }
 
   res = task_init(task, process);
-  if (res != ROMOS_ALL_OK)
+  if (res != ALL_OK)
   {
     goto out;
   }
@@ -221,7 +221,7 @@ int task_init(struct task_t *task, struct process_t *process)
     return -EIO;
   }
 
-  task->registers_state.ip = ROMOS_PROGRAM_VIRTUAL_ADDRESS;
+  task->registers_state.ip = PROGRAM_VIRTUAL_ADDRESS;
   // if (process->filetype == PROCESS_FILETYPE_ELF)
   // {
   //   task->registers.ip = elf_header(process->elf_file)->e_entry;
@@ -229,7 +229,7 @@ int task_init(struct task_t *task, struct process_t *process)
 
   task->registers_state.ss = USER_DATA_SEGMENT;
   task->registers_state.cs = USER_CODE_SEGMENT;
-  task->registers_state.esp = ROMOS_PROGRAM_VIRTUAL_STACK_ADDRESS_START;
+  task->registers_state.esp = PROGRAM_VIRTUAL_STACK_ADDRESS_START;
 
   task->process = process;
 

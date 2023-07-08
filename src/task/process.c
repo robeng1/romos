@@ -12,7 +12,7 @@
 // The current process that is running
 struct process_t *current_process = 0;
 
-static struct process_t *processes[ROMOS_MAX_PROCESSES] = {};
+static struct process_t *processes[MAX_PROCESSES] = {};
 
 static void process_init(struct process_t *process)
 {
@@ -26,7 +26,7 @@ struct process_t *process_current()
 
 struct process_t *process_get(int process_id)
 {
-  if (process_id < 0 || process_id >= ROMOS_MAX_PROCESSES)
+  if (process_id < 0 || process_id >= MAX_PROCESSES)
   {
     return NULL;
   }
@@ -43,7 +43,7 @@ int process_switch(struct process_t *process)
 static int process_find_free_allocation_index(struct process_t *process)
 {
   int res = -ENOMEM;
-  for (int i = 0; i < ROMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+  for (int i = 0; i < MAX_PROGRAM_ALLOCATIONS; i++)
   {
     if (process->allocations[i].ptr == 0)
     {
@@ -89,7 +89,7 @@ out_err:
 
 static bool process_is_process_pointer(struct process_t *process, void *ptr)
 {
-  for (int i = 0; i < ROMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+  for (int i = 0; i < MAX_PROGRAM_ALLOCATIONS; i++)
   {
     if (process->allocations[i].ptr == ptr)
       return true;
@@ -100,7 +100,7 @@ static bool process_is_process_pointer(struct process_t *process, void *ptr)
 
 static void process_allocation_unjoin(struct process_t *process, void *ptr)
 {
-  for (int i = 0; i < ROMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+  for (int i = 0; i < MAX_PROGRAM_ALLOCATIONS; i++)
   {
     if (process->allocations[i].ptr == ptr)
     {
@@ -112,7 +112,7 @@ static void process_allocation_unjoin(struct process_t *process, void *ptr)
 
 static struct process_allocation_t *process_get_allocation_by_addr(struct process_t *process, void *addr)
 {
-  for (int i = 0; i < ROMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+  for (int i = 0; i < MAX_PROGRAM_ALLOCATIONS; i++)
   {
     if (process->allocations[i].ptr == addr)
       return &process->allocations[i];
@@ -123,7 +123,7 @@ static struct process_allocation_t *process_get_allocation_by_addr(struct proces
 
 int process_terminate_allocations(struct process_t *process)
 {
-  for (int i = 0; i < ROMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+  for (int i = 0; i < MAX_PROGRAM_ALLOCATIONS; i++)
   {
     process_free(process, process->allocations[i].ptr);
   }
@@ -164,7 +164,7 @@ int process_free_program_data(struct process_t *process)
 
 void process_switch_to_any()
 {
-  for (int i = 0; i < ROMOS_MAX_PROCESSES; i++)
+  for (int i = 0; i < MAX_PROCESSES; i++)
   {
     if (processes[i])
     {
@@ -308,7 +308,7 @@ static int process_load_binary(const char *filename, struct process_t *process)
 
   struct file_stat_t stat;
   res = fstat(fd, &stat);
-  if (res != ROMOS_ALL_OK)
+  if (res != ALL_OK)
   {
     goto out;
   }
@@ -373,7 +373,7 @@ static int process_load_data(const char *filename, struct process_t *process)
 int process_map_binary(struct process_t *process)
 {
   int res = 0;
-  paging_map_virtual_to_physical_addresses(process->task->page_directory, (void *)ROMOS_PROGRAM_VIRTUAL_ADDRESS, process->ptr, paging_align_address(process->ptr + process->size), PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL | PAGING_IS_WRITEABLE);
+  paging_map_virtual_to_physical_addresses(process->task->page_directory, (void *)PROGRAM_VIRTUAL_ADDRESS, process->ptr, paging_align_address(process->ptr + process->size), PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL | PAGING_IS_WRITEABLE);
   return res;
 }
 
@@ -426,14 +426,14 @@ int process_map_memory(struct process_t *process)
   }
 
   // Finally map the stack
-  paging_map_virtual_to_physical_addresses(process->task->page_directory, (void *)ROMOS_PROGRAM_VIRTUAL_STACK_ADDRESS_END, process->stack, paging_align_address(process->stack + ROMOS_USER_PROGRAM_STACK_SIZE), PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL | PAGING_IS_WRITEABLE);
+  paging_map_virtual_to_physical_addresses(process->task->page_directory, (void *)PROGRAM_VIRTUAL_STACK_ADDRESS_END, process->stack, paging_align_address(process->stack + USER_PROGRAM_STACK_SIZE), PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL | PAGING_IS_WRITEABLE);
 out:
   return res;
 }
 
 int process_get_free_slot()
 {
-  for (int i = 0; i < ROMOS_MAX_PROCESSES; i++)
+  for (int i = 0; i < MAX_PROCESSES; i++)
   {
     if (processes[i] == 0)
       return i;
@@ -495,7 +495,7 @@ int process_load_for_slot(const char *filename, struct process_t **process, int 
     goto out;
   }
 
-  program_stack_ptr = kernel_zalloc(ROMOS_USER_PROGRAM_STACK_SIZE);
+  program_stack_ptr = kernel_zalloc(USER_PROGRAM_STACK_SIZE);
   if (!program_stack_ptr)
   {
     res = -ENOMEM;

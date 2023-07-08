@@ -8,14 +8,14 @@
 #include "status.h"                  // Include the "status.h" header file
 #include "kernel/kernel.h"                  // Include the "kernel.h" header file
 
-struct filesystem_t *filesystems[ROMOS_MAX_FILESYSTEMS];                // Array of pointers to filesystems
-struct file_descriptor_t *file_descriptors[ROMOS_MAX_FILE_DESCRIPTORS]; // Array of pointers to file descriptors
+struct filesystem_t *filesystems[MAX_FILESYSTEMS];                // Array of pointers to filesystems
+struct file_descriptor_t *file_descriptors[MAX_FILE_DESCRIPTORS]; // Array of pointers to file descriptors
 
 // Function to get a pointer to a free filesystem slot
 static struct filesystem_t **fs_get_free_filesystem()
 {
   int i = 0;
-  for (i = 0; i < ROMOS_MAX_FILESYSTEMS; i++)
+  for (i = 0; i < MAX_FILESYSTEMS; i++)
   {
     if (filesystems[i] == 0)
     {
@@ -74,7 +74,7 @@ static void file_free_descriptor(struct file_descriptor_t *desc)
 static int file_new_descriptor(struct file_descriptor_t **desc_out)
 {
   int res = -ENOMEM;
-  for (int i = 0; i < ROMOS_MAX_FILE_DESCRIPTORS; i++)
+  for (int i = 0; i < MAX_FILE_DESCRIPTORS; i++)
   {
     if (file_descriptors[i] == 0)
     {
@@ -94,7 +94,7 @@ static int file_new_descriptor(struct file_descriptor_t **desc_out)
 // Function to get a file descriptor by its index
 static struct file_descriptor_t *file_get_descriptor(int fd)
 {
-  if (fd <= 0 || fd >= ROMOS_MAX_FILE_DESCRIPTORS)
+  if (fd <= 0 || fd >= MAX_FILE_DESCRIPTORS)
   {
     return 0;
   }
@@ -108,7 +108,7 @@ static struct file_descriptor_t *file_get_descriptor(int fd)
 struct filesystem_t *fs_resolve(struct disk_t *disk)
 {
   struct filesystem_t *fs = 0;
-  for (int i = 0; i < ROMOS_MAX_FILESYSTEMS; i++)
+  for (int i = 0; i < MAX_FILESYSTEMS; i++)
   {
     if (filesystems[i] != 0 && filesystems[i]->resolve(disk) == 0)
     {
@@ -232,7 +232,7 @@ int fclose(int fd)
   }
 
   res = desc->filesystem->close(desc->private);
-  if (res == ROMOS_ALL_OK)
+  if (res == ALL_OK)
   {
     file_free_descriptor(desc);
   }

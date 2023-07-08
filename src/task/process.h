@@ -34,13 +34,13 @@ struct process_t
   // The process id
   uint16_t id;
 
-  char filename[ROMOS_MAX_PATH];
+  char filename[MAX_PATH];
 
   // The main process task
   struct task_t *task;
 
   // The memory (malloc) allocations of the process
-  struct process_allocation_t allocations[ROMOS_MAX_PROGRAM_ALLOCATIONS];
+  struct process_allocation_t allocations[MAX_PROGRAM_ALLOCATIONS];
 
   PROCESS_FILETYPE filetype;
 
@@ -59,7 +59,7 @@ struct process_t
 
   struct keyboard_buffer_t
   {
-    char buffer[ROMOS_KEYBOARD_BUFFER_SIZE];
+    char buffer[KEYBOARD_BUFFER_SIZE];
     int tail;
     int head;
   } keyboard;

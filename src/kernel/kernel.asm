@@ -49,7 +49,7 @@ _start:
     jmp $                ; Endless loop (halt execution)
 
 kernel_registers:
-    mov ax, 0x10         ; Move the offset of the data segment into AX
+    mov ax, DATA_SEG     ; Move the offset of the data segment into AX
     mov ds, ax           ; Load DS with the data segment offset
     mov es, ax           ; Load ES with the data segment offset
     mov gs, ax           ; Load GS with the data segment offset

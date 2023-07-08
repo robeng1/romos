@@ -8,7 +8,7 @@
 
 static int parser_path_valid_format(const char *filename)
 {
-  int len = strnlen(filename, ROMOS_MAX_PATH); // Get the length of the filename up to ROMOS_MAX_PATH characters
+  int len = strnlen(filename, MAX_PATH); // Get the length of the filename up to MAX_PATH characters
   return (len >= 3 && isdigit(filename[0]) && memcmp((void *)&filename[1], ":/", 2) == 0);
   // Check if the filename has a valid format: digit:/path
 }
@@ -38,7 +38,7 @@ static struct path_root_t *parser_create_root(int drive_number)
 
 static const char *parser_get_path_part(const char **path)
 {
-  char *result_path_part = kernel_zalloc(ROMOS_MAX_PATH);
+  char *result_path_part = kernel_zalloc(MAX_PATH);
   // Allocate memory for the path part
   int i = 0;
   while (**path != '/' && **path != 0x00)
@@ -105,9 +105,9 @@ struct path_root_t *parser_parse(const char *path, const char *current_directory
   const char *tmp_path = path;     // Create a temporary pointer to the path
   struct path_root_t *path_root = 0; // Initialize the path_root pointer to NULL
 
-  if (strlen(path) > ROMOS_MAX_PATH)
+  if (strlen(path) > MAX_PATH)
   {
-    goto out; // If the length of the path exceeds ROMOS_MAX_PATH, exit the function
+    goto out; // If the length of the path exceeds MAX_PATH, exit the function
   }
 
   res = parser_get_drive_by_path(&tmp_path); // Get the drive number from the path

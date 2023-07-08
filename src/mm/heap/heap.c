@@ -9,7 +9,7 @@ static int heap_validate_table(void *ptr, void *end, struct heap_table_t *table)
   int res = 0;
 
   size_t table_size = (size_t)(end - ptr);
-  size_t total_blocks = table_size / ROMOS_HEAP_BLOCK_SIZE;
+  size_t total_blocks = table_size / HEAP_BLOCK_SIZE;
   if (table->total != total_blocks)
   {
     res = -EINVARG;
@@ -22,7 +22,7 @@ out:
 
 static bool heap_validate_alignment(void *ptr)
 {
-  return ((unsigned int)ptr % ROMOS_HEAP_BLOCK_SIZE) == 0;
+  return ((unsigned int)ptr % HEAP_BLOCK_SIZE) == 0;
 }
 
 int heap_create(struct heap_t *heap, void *ptr, void *end, struct heap_table_t *table)
@@ -54,13 +54,13 @@ out:
 
 static uint32_t heap_align_value_to_upper(uint32_t val)
 {
-  if ((val % ROMOS_HEAP_BLOCK_SIZE) == 0)
+  if ((val % HEAP_BLOCK_SIZE) == 0)
   {
     return val;
   }
 
-  val = (val - (val % ROMOS_HEAP_BLOCK_SIZE));
-  val += ROMOS_HEAP_BLOCK_SIZE;
+  val = (val - (val % HEAP_BLOCK_SIZE));
+  val += HEAP_BLOCK_SIZE;
   return val;
 }
 
@@ -111,7 +111,7 @@ int heap_get_start_block(struct heap_t *heap, uint32_t total_blocks)
 
 void *heap_block_to_address(struct heap_t *heap, int block)
 {
-  return heap->start_address + (block * ROMOS_HEAP_BLOCK_SIZE);
+  return heap->start_address + (block * HEAP_BLOCK_SIZE);
 }
 
 void heap_mark_blocks_taken(struct heap_t *heap, int start_block, int total_blocks)
@@ -170,13 +170,13 @@ void heap_mark_blocks_free(struct heap_t *heap, int starting_block)
 
 int heap_address_to_block(struct heap_t *heap, void *address)
 {
-  return ((int)(address - heap->start_address)) / ROMOS_HEAP_BLOCK_SIZE;
+  return ((int)(address - heap->start_address)) / HEAP_BLOCK_SIZE;
 }
 
 void *heap_malloc(struct heap_t *heap, size_t size)
 {
   size_t aligned_size = heap_align_value_to_upper(size);
-  uint32_t total_blocks = aligned_size / ROMOS_HEAP_BLOCK_SIZE;
+  uint32_t total_blocks = aligned_size / HEAP_BLOCK_SIZE;
   return heap_malloc_blocks(heap, total_blocks);
 }
 

@@ -7,14 +7,14 @@
 #include "task/process.h"
 #include "status.h"
 
-struct idt_entry_t idt_descriptors[ROMOS_TOTAL_INTERRUPTS];
+struct idt_entry_t idt_descriptors[TOTAL_INTERRUPTS];
 struct idt_ptr_t idt_ptr_t;
 
-extern void *interrupt_pointer_table[ROMOS_TOTAL_INTERRUPTS];
+extern void *interrupt_pointer_table[TOTAL_INTERRUPTS];
 
-static interrupt_callback_t interrupt_callbacks[ROMOS_TOTAL_INTERRUPTS];
+static interrupt_callback_t interrupt_callbacks[TOTAL_INTERRUPTS];
 
-static isr80h_cmd_t isr80h_commands[ROMOS_MAX_ISR80H_COMMANDS];
+static isr80h_cmd_t isr80h_commands[MAX_ISR80H_COMMANDS];
 
 extern void load_idt(struct idt_ptr_t *ptr);
 
@@ -70,7 +70,7 @@ void init_idt()
   idt_ptr_t.limit = sizeof(idt_descriptors) - 1;
   idt_ptr_t.base = (uint32_t)idt_descriptors;
 
-  for (int i = 0; i < ROMOS_TOTAL_INTERRUPTS; i++)
+  for (int i = 0; i < TOTAL_INTERRUPTS; i++)
   {
     set_idt(i, interrupt_pointer_table[i]);
   }
@@ -90,7 +90,7 @@ void init_idt()
 
 int idt_register_interrupt_callback(int interrupt, interrupt_callback_t interrupt_callback)
 {
-  if (interrupt < 0 || interrupt >= ROMOS_TOTAL_INTERRUPTS)
+  if (interrupt < 0 || interrupt >= TOTAL_INTERRUPTS)
   {
     return -EINVARG;
   }
@@ -101,7 +101,7 @@ int idt_register_interrupt_callback(int interrupt, interrupt_callback_t interrup
 
 void isr80h_register_command(int id, isr80h_cmd_t command)
 {
-  if (id < 0 || id >= ROMOS_MAX_ISR80H_COMMANDS)
+  if (id < 0 || id >= MAX_ISR80H_COMMANDS)
   {
     panic("The command is out of bounds\n");
   }
@@ -118,7 +118,7 @@ void *isr80h_handle_command(int command, struct interrupt_frame_t *frame)
 {
   void *result = 0;
 
-  if (command < 0 || command >= ROMOS_MAX_ISR80H_COMMANDS)
+  if (command < 0 || command >= MAX_ISR80H_COMMANDS)
   {
     // Invalid command
     return 0;
