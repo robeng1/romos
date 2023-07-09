@@ -1,5 +1,27 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef SYSTEM_H
+#define SYSTEM_H
+#include <stddef.h>
+#include <stdint.h>
+// Some useful macro
+#define ALIGN(x, a) __ALIGN_MASK(x, (typeof(x))(a)-1)
+#define __ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
+void panic(const char *message, const char *file, uint32_t line);
+#define PANIC(msg) panic(msg, __FILE__, __LINE__)
+
+void panic(const char *message, const char *file, uint32_t line);
+#define LOG(msg) log(msg, __FILE__, __LINE__)
+#define ASSERT(b) ((b) ? (void)0 : panic(#b, __FILE__, __LINE__))
+
+#define LOAD_MEMORY_ADDRESS 0xC0000000
+
+#define TRUE 1
+#define FALSE 0
+
+#define K 1024
+#define M (1024 * K)
+#define G (1024 * M)
+
+#define KDEBUG 1
 
 #define KERNEL_CODE_SELECTOR 0x08
 #define KERNEL_DATA_SELECTOR 0x10
@@ -35,5 +57,16 @@
 #define MAX_ISR80H_COMMANDS 1024
 
 #define KEYBOARD_BUFFER_SIZE 1024
+
+#define ALL_OK 0
+#define EIO 1
+#define EINVARG 2
+#define ENOMEM 3
+#define EBADPATH 4
+#define EFSNOTUS 5
+#define ERDONLY 6
+#define EUNIMP 7
+#define EISTKN 8
+#define EINFORMAT 9
 
 #endif

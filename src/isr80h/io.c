@@ -22,6 +22,6 @@ void *isr80h_io_cmd_getkey(struct interrupt_frame_t *frame)
 void *isr80h_io_cmd_putchar(struct interrupt_frame_t *frame)
 {
   char c = (char)(int)task_get_stack_item(task_current(), 0);
-  term_writechar(c, 15);
+  term_writechar(c);
   return 0;
 }

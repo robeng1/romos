@@ -1,11 +1,11 @@
 #include "file.h"                    // Include the "file.h" header file
-#include "config.h"                  // Include the "config.h" header file
+#include "common/system.h"                  // Include the "config.h" header file
 #include "mm/memory.h"           // Include the "memory/memory.h" header file
 #include "mm/heap/kernel_heap.h" // Include the "memory/heap/kernel_heap.h" header file
 #include "string/string.h"           // Include the "string/string.h" header file
 #include "disk/disk.h"               // Include the "disk/disk.h" header file
 #include "fat/fat16.h"               // Include the "fat/fat16.h" header file
-#include "status.h"                  // Include the "status.h" header file
+                  // Include the "status.h" header file
 #include "kernel/kernel.h"                  // Include the "kernel.h" header file
 
 struct filesystem_t *filesystems[MAX_FILESYSTEMS];                // Array of pointers to filesystems
@@ -107,7 +107,7 @@ static struct file_descriptor_t *file_get_descriptor(int fd)
 // Function to resolve the filesystem for a disk
 struct filesystem_t *fs_resolve(struct disk_t *disk)
 {
-
+  
   struct filesystem_t *fs = 0;
   for (int i = 0; i < MAX_FILESYSTEMS; i++)
   {

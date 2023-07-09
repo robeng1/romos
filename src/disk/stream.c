@@ -1,9 +1,8 @@
-#include "stream.h"              // Include header file for stream-related functionality
-#include "mm/heap/kernel_heap.h" // Include header file for kernel heap functionality
-#include "config.h"              // Include configuration header file
-#include "kernel/kernel.h"
-
-#include <stdbool.h> // Include header file for boolean data type
+#include <stdbool.h>             // Include header file for boolean data type
+#include <disk/stream.h>         // Include header file for stream-related functionality
+#include <mm/heap/kernel_heap.h> // Include header file for kernel heap functionality
+#include <common/system.h>       // Include configuration header file
+#include <kernel/kernel.h>
 
 struct disk_stream_t *new_disk_stream(int disk_id) // Function to create a new disk stream
 {
@@ -27,42 +26,35 @@ int disk_stream_seek(struct disk_stream_t *stream, int pos) // Function to set t
 
 int disk_stream_read(struct disk_stream_t *stream, void *out, int total) // Function to read data from the disk stream
 {
+  int sector = stream->pos / SECTOR_SIZE;
+  int offset = stream->pos % SECTOR_SIZE;
   int total_to_read = total;
-  int res = 0;
-  char *out_ptr = (char *)out;
+  bool overflow = (offset + total_to_read) >= SECTOR_SIZE;
+  char buf[SECTOR_SIZE];
 
-  while (total_to_read > 0)
+  if (overflow)
   {
-    int sector = stream->pos / SECTOR_SIZE;
-    int offset = stream->pos % SECTOR_SIZE;
-    bool overflow = (offset + total_to_read) >= SECTOR_SIZE;
-    char buf[SECTOR_SIZE];
-
-    if (overflow)
-    {
-      total_to_read -= (offset + total_to_read) - SECTOR_SIZE;
-    }
-
-    res = disk_read_block(stream->disk, sector, 1, buf);
-    if (res < 0)
-    {
-      break;
-    }
-
-    for (int i = 0; i < total_to_read; i++)
-    {
-      *out_ptr++ = buf[offset + i];
-    }
-
-    // Adjust the stream
-    stream->pos += total_to_read;
-
-    if (overflow)
-    {
-      total_to_read = total - (out_ptr - (char *)out);
-    }
+    total_to_read -= (offset + total_to_read) - SECTOR_SIZE;
   }
 
+  int res = disk_read_block(stream->disk, sector, 1, buf);
+  if (res < 0)
+  {
+    goto out;
+  }
+
+  for (int i = 0; i < total_to_read; i++)
+  {
+    *(char *)out++ = buf[offset + i];
+  }
+
+  // Adjust the stream
+  stream->pos += total_to_read;
+  if (overflow)
+  {
+    res = disk_stream_read(stream, out, total - total_to_read);
+  }
+out:
   return res;
 }
 

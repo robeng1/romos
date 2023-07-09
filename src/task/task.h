@@ -1,8 +1,8 @@
 #ifndef TASK_H
 #define TASK_H
 
-#include "config.h"
-#include "mm/paging/paging.h"
+#include <common/system.h>
+#include <mm/paging/paging.h>
 
 struct interrupt_frame_t;
 

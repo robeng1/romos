@@ -1,11 +1,11 @@
 #include "idt.h"
-#include "config.h"
+#include "common/system.h"
 #include "io/io.h"
 #include "kernel/kernel.h"
 #include "mm/memory.h"
 #include "task/task.h"
 #include "task/process.h"
-#include "status.h"
+
 
 struct idt_entry_t idt_descriptors[TOTAL_INTERRUPTS];
 struct idt_ptr_t idt_ptr_t;
@@ -103,12 +103,12 @@ void isr80h_register_command(int id, isr80h_cmd_t command)
 {
   if (id < 0 || id >= MAX_ISR80H_COMMANDS)
   {
-    panic("The command is out of bounds\n");
+    PANIC("The command is out of bounds\n");
   }
 
   if (isr80h_commands[id])
   {
-    panic("Your attempting to overwrite an existing command\n");
+    PANIC("Your attempting to overwrite an existing command\n");
   }
 
   isr80h_commands[id] = command;

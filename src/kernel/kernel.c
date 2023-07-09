@@ -1,22 +1,21 @@
 #include <stddef.h>
 #include <stdint.h>
-#include "kernel.h"
-#include "fs/file.h"
-#include "disk/disk.h"
-#include "fs/parser.h"
-#include "idt/idt.h"
-#include "task/tss.h"
-#include "task/process.h"
-#include "gdt/gdt.h"
-#include "config.h"
-#include "status.h"
-#include "isr80h/isr80h.h"
-#include "mm/memory.h"
-#include "mm/heap/kernel_heap.h"
-#include "mm/paging/paging.h"
-#include "mm/blkm/blkm.h"
-#include "string/string.h"
-#include "drivers/keyboard/keyboard.h"
+#include <fs/file.h>
+#include <kernel/kernel.h>
+#include <disk/disk.h>
+#include <fs/parser.h>
+#include <idt/idt.h>
+#include <task/tss.h>
+#include <task/process.h>
+#include <gdt/gdt.h>
+#include <common/system.h>
+#include <isr80h/isr80h.h>
+#include <mm/memory.h>
+#include <mm/heap/kernel_heap.h>
+#include <mm/paging/paging.h>
+#include <mm/blkm/blkm.h>
+#include <string/string.h>
+#include <drivers/keyboard/keyboard.h>
 
 uint16_t *vram = 0;
 uint16_t t_row = 0;
@@ -33,7 +32,25 @@ void term_putchar(int row, int col, char c, char colour)
   vram[(row * VGA_WIDTH) + col] = makechar(c, colour);
 }
 
-void term_writechar(char c, char colour)
+void terminal_backspace()
+{
+  if (t_row == 0 && t_column == 0)
+  {
+    return;
+  }
+
+  if (t_column == 0)
+  {
+    t_row -= 1;
+    t_column = VGA_WIDTH;
+  }
+
+  t_column -= 1;
+  term_writechar(' ');
+  t_column -= 1;
+}
+
+void term_writechar(char c)
 {
   if (c == '\n')
   {
@@ -42,7 +59,21 @@ void term_writechar(char c, char colour)
     return;
   }
 
-  term_putchar(t_row, t_column, c, colour);
+  if (c == 0x08)
+  {
+    terminal_backspace();
+    return;
+  }
+
+  if (c == '\t')
+  {
+    int i;
+    for (i = 0; i < 4; i++)
+      term_writechar(' ');
+    return;
+  }
+
+  term_putchar(t_row, t_column, c, 15);
   ++t_column;
   if (t_column > VGA_WIDTH)
   {
@@ -72,15 +103,7 @@ void print(const char *str)
   size_t len = strlen(str);
   for (size_t i = 0; i < len; i++)
   {
-    term_writechar(str[i], 15);
-  }
-}
-
-void panic(const char *msg)
-{
-  print(msg);
-  while (1)
-  {
+    term_writechar(str[i]);
   }
 }
 
@@ -91,7 +114,6 @@ void switch_to_kernel_page()
   kernel_registers();
   paging_switch(kernel_chunk);
 }
-
 
 struct tss_entry_t kernel_tss;
 struct gdt_entry_t gdt_entries[TOTAL_GDT_SEGMENTS];
@@ -131,12 +153,12 @@ struct gdt_ptr_t gdt_ptr[TOTAL_GDT_SEGMENTS] = {
     // This segment is used for the Task State Segment (TSS).
     // The access byte 0x89 means the segment is present (0x80), it's an available TSS (0x09).
     // The flags 0x0 means the limit is specified in byte units and it's a 16-bit segment.
-    {.base = (uint32_t)&kernel_tss, .limit = sizeof(kernel_tss), .access_byte = 0x89, .flags = 0x0}};
+    {.base = ((uint32_t)(&kernel_tss)), .limit = sizeof(kernel_tss), .access_byte = 0x89, .flags = 0x0}};
 
 void start_kernel()
 {
   term_init();
-  
+
   memset(gdt_entries, 0x00, sizeof(gdt_entries));
   gdt_ptr_to_gdt(gdt_entries, gdt_ptr, TOTAL_GDT_SEGMENTS);
   // Load the gdt
@@ -150,10 +172,10 @@ void start_kernel()
 
   // Search and initialize the disks
   disk_search_and_init();
-  
+
   // Initialize the interrupt descriptor table
   init_idt();
- 
+
   // Setup the TSS
   memset(&kernel_tss, 0x00, sizeof(kernel_tss));
   kernel_tss.esp0 = 0x600000;
@@ -178,6 +200,12 @@ void start_kernel()
   int res = process_load_switch("0:/shell.elf", &process);
   if (res != ALL_OK)
   {
-    panic("No shell at the moment");
+    PANIC("No shell at the moment");
+  }
+
+  task_run_first_ever_task();
+
+  while (1)
+  {
   }
 }

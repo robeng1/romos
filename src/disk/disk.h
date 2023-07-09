@@ -1,7 +1,7 @@
 #ifndef DISK_H
 #define DISK_H
 
-#include "fs/file.h"
+#include <fs/file.h>
 
 typedef unsigned int DISK_TYPE;
 

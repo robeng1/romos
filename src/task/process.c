@@ -1,15 +1,14 @@
-#include "process.h"
-#include "config.h"
-#include "status.h"
-#include "task/task.h"
-#include "mm/memory.h"
-#include "string/string.h"
-#include "fs/file.h"
-#include "mm/heap/kernel_heap.h"
-#include "mm/paging/paging.h"
-#include "kernel/kernel.h"
-#include "loaders/elf/elf.h"
-#include "loaders/elf/loader.h"
+#include <task/process.h>
+#include <common/system.h>
+#include <task/task.h>
+#include <mm/memory.h>
+#include <string/string.h>
+#include <fs/file.h>
+#include <mm/heap/kernel_heap.h>
+#include <mm/paging/paging.h>
+#include <kernel/kernel.h>
+#include <loaders/elf/elf.h>
+#include <loaders/elf/loader.h>
 
 // The current process that is running
 struct process_t *current_process = 0;
@@ -175,7 +174,7 @@ void process_switch_to_any()
     }
   }
 
-  panic("No processes to switch too\n");
+  PANIC("No processes to switch too\n");
 }
 
 static void process_unlink(struct process_t *process)
@@ -419,7 +418,7 @@ int process_map_memory(struct process_t *process)
     break;
 
   default:
-    panic("process_map_memory: Invalid filetype\n");
+    PANIC("process_map_memory: Invalid filetype\n");
   }
 
   if (res < 0)
@@ -453,7 +452,6 @@ int process_load(const char *filename, struct process_t **process)
     res = -EISTKN;
     goto out;
   }
-
   res = process_load_for_slot(filename, process, process_slot);
 out:
   return res;
@@ -461,7 +459,9 @@ out:
 
 int process_load_switch(const char *filename, struct process_t **process)
 {
+  
   int res = process_load(filename, process);
+ 
   if (res == 0)
   {
     process_switch(*process);

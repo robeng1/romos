@@ -1,6 +1,6 @@
 #ifndef MEMORY_HEAP_H
 #define MEMORY_HEAP_H
-#include "config.h"
+#include "common/system.h"
 #include <stdint.h>
 #include <stddef.h>
 

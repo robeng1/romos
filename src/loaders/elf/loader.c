@@ -1,13 +1,13 @@
 #include "loader.h"
 #include "fs/file.h"
-#include "status.h"
+
 #include <stdbool.h>
 #include "mm/memory.h"
 #include "mm/heap/kernel_heap.h"
 #include "string/string.h"
 #include "mm/paging/paging.h"
 #include "kernel/kernel.h"
-#include "config.h"
+#include "common/system.h"
 
 const char elf_signature[] = {0x7f, 'E', 'L', 'F'};
 
@@ -172,6 +172,7 @@ out:
 
 int elf_load(const char *filename, struct elf_file_t **file_out)
 {
+
   struct elf_file_t *elf_file = kernel_zalloc(sizeof(struct elf_file_t));
   int fd = 0;
   int res = fopen(filename, "r");

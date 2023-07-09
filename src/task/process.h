@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "task.h"
-#include "config.h"
+#include <task/task.h>
+#include <common/system.h>
 
 #define PROCESS_FILETYPE_ELF 0
 #define PROCESS_FILETYPE_BINARY 1

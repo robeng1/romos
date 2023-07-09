@@ -31,7 +31,10 @@ FILES = ./build/kernel/kernel.asm.o \
 ./build/mm/heap/kernel_heap.o \
 ./build/mm/paging/paging.o \
 ./build/mm/paging/paging.asm.o \
-./build/mm/blkm/blkm.o
+./build/mm/blkm/blkm.o \
+./build/common/printf.o \
+./build/common/system.o \
+./build/common/dll.o
 
 # INCLUDES is a list of directories where the compiler can find header files
 INCLUDES = -I./src
@@ -91,12 +94,19 @@ $(BUILD_DIR)/%.asm.o: ./src/%.asm
 all: $(BIN_DIR)/os.bin
 
 # This rule describes how to build os.bin from boot.bin and kernel.bin
-$(BIN_DIR)/os.bin: $(BIN_DIR)/boot.bin $(BIN_DIR)/kernel.bin
+$(BIN_DIR)/os.bin: $(BIN_DIR)/boot.bin $(BIN_DIR)/kernel.bin coreutils
 	rm -rf $(BIN_DIR)/os.bin
 	dd if=$(BIN_DIR)/boot.bin >> $(BIN_DIR)/os.bin
 	dd if=$(BIN_DIR)/kernel.bin >> $(BIN_DIR)/os.bin
 	dd if=/dev/zero bs=1048576 count=16 >> $(BIN_DIR)/os.bin
 	sudo mount -t vfat ./bin/os.bin /mnt/d
+
+	sudo cp ./src/tools/shell/shell.elf /mnt/d
+	sudo cp ./src/tools/echo/echo.elf /mnt/d
+	sudo cp ./src/lib/stdlib/stdlib.elf /mnt/d
+
+
+	sudo umount /mnt/d
 
 # This rule describes how to build kernel.bin from the object files listed in FILES
 $(BIN_DIR)/kernel.bin: $(FILES)
@@ -107,8 +117,19 @@ $(BIN_DIR)/kernel.bin: $(FILES)
 $(BIN_DIR)/boot.bin: ./src/boot/boot.asm
 	$(AS) -f bin ./src/boot/boot.asm -o $(BIN_DIR)/boot.bin
 
+
+coreutils:
+	cd ./src/lib/stdlib && $(MAKE) all
+	cd ./src/tools/shell && $(MAKE) all
+	cd ./src/tools/echo && $(MAKE) all
+
+coreutils_clean:
+	cd ./src/lib/stdlib && $(MAKE) clean
+	cd ./src/tools/shell && $(MAKE) clean
+	cd ./src/tools/echo && $(MAKE) clean
+
 # The 'clean' target removes all the generated files
-clean:
+clean: coreutils_clean
 	rm -rf $(BIN_DIR)/*.bin
 	rm -rf $(FILES)
 	rm -rf $(BUILD_DIR)/*.o

@@ -1,14 +1,13 @@
-#include "task.h"
-#include "kernel/kernel.h"
-#include "status.h"
-#include "config.h"
-#include "process.h"
-#include "mm/heap/kernel_heap.h"
-#include "mm/memory.h"
-#include "string/string.h"
-#include "mm/paging/paging.h"
-#include "idt/idt.h"
-#include "loaders/elf/loader.h"
+#include <task/task.h>
+#include <kernel/kernel.h>
+#include <common/system.h>
+#include <task/process.h>
+#include <mm/heap/kernel_heap.h>
+#include <mm/memory.h>
+#include <string/string.h>
+#include <mm/paging/paging.h>
+#include <idt/idt.h>
+#include <loaders/elf/loader.h>
 
 // The current task that is running
 struct task_t *current_task = 0;
@@ -110,7 +109,7 @@ void task_next()
   struct task_t *next_task = task_get_next();
   if (!next_task)
   {
-    panic("No more tasks!\n");
+    PANIC("No more tasks!\n");
   }
 
   task_switch(next_task);
@@ -180,7 +179,7 @@ void task_current_save_state(struct interrupt_frame_t *frame)
 {
   if (!task_current())
   {
-    panic("No current task to save\n");
+    PANIC("No current task to save\n");
   }
 
   struct task_t *task = task_current();
@@ -205,7 +204,7 @@ void task_run_first_ever_task()
 {
   if (!current_task)
   {
-    panic("task_run_first_ever_task(): No current task exists!\n");
+    PANIC("task_run_first_ever_task(): No current task exists!\n");
   }
 
   task_switch(task_head);

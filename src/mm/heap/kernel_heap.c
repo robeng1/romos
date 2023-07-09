@@ -1,6 +1,6 @@
 #include "kernel_heap.h"
 #include "heap.h"
-#include "config.h"
+#include "common/system.h"
 #include "kernel/kernel.h"
 #include "mm/memory.h"
 
@@ -17,7 +17,7 @@ void kernel_heap_init()
   int res = heap_create(&kernel_heap, (void *)(HEAP_ADDRESS), end, &kernel_heap_table);
   if (res < 0)
   {
-    panic("Failed to create heap\n");
+    PANIC("Failed to create heap\n");
   }
 }
 

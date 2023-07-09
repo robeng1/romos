@@ -2,8 +2,8 @@
 #include "task/task.h"
 #include "task/process.h"
 #include "string/string.h"
-#include "status.h"
-#include "config.h"
+
+#include "common/system.h"
 #include "kernel/kernel.h"
 
 void *isr80h_proc_cmd_process_load_start(struct interrupt_frame_t *frame)

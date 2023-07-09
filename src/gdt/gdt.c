@@ -1,5 +1,5 @@
-#include "gdt.h"    // This line includes the gdt.h header file, which contains the definitions of the 'gdt_entry' and 'gdt_ptr' structures.
-#include "kernel/kernel.h" // This line includes the kernel.h header file, which may contain other important definitions or functions for the OS kernel, such as 'panic' function.
+#include <gdt/gdt.h>
+#include <common/system.h>
 
 // Here we define a function that encodes a 'gdt_ptr' structure into a format that the CPU can understand.
 void encode_gdt_entry(uint8_t *target, struct gdt_ptr_t source)
@@ -7,7 +7,7 @@ void encode_gdt_entry(uint8_t *target, struct gdt_ptr_t source)
   // Check the limit to make sure that it can be encoded
   if (source.limit > 0xFFFFF)
   {
-    panic("GDT cannot encode limits larger than 0xFFFFF");
+    PANIC("GDT cannot encode limits larger than 0xFFFFF");
   }
 
   // Encode the limit

@@ -1,5 +1,5 @@
 
-# Simple OS Code
+# RomOS 
 
 This repository contains a simple OS code.
 

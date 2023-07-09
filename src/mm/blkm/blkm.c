@@ -1,7 +1,7 @@
-#include "status.h"
+
 #include "blkm.h"
 #include "mm/memory.h"
-#include "config.h"
+#include "common/system.h"
 
 #define MEMORY_SIZE (1024 * 1024 * 1024) // Total memory size (1GB)
 #define BLOCK_SIZE (4 * 1024)            // Size of each memory block (4KB)

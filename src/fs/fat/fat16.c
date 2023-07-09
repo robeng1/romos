@@ -5,9 +5,9 @@
 #include "disk/stream.h"
 #include "mm/heap/kernel_heap.h"
 #include "mm/memory.h"
-#include "status.h"
+
 #include "kernel/kernel.h"
-#include "config.h"
+#include "common/system.h"
 #include <stdint.h>
 
 // Define some constants
@@ -304,6 +304,7 @@ int fat16_resolve(struct disk_t *disk)
   
   if (fat16_get_root_directory(disk, fat_private, &fat_private->root_directory) != ALL_OK)
   {
+    
     res = -EIO;
     goto out;
   }

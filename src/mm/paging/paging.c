@@ -1,7 +1,7 @@
 #include "idt/idt.h"
 #include "paging.h"
-#include "mm/heap/kernel_heap.h" // Include for memory allocation functions
-#include "status.h"              // Include for error codes
+#include "mm/heap/kernel_heap.h"
+#include "common/system.h"
 
 // Load the page directory into the processor's control registers (external assembly function)
 extern void load_page_directory(uint32_t *directory);

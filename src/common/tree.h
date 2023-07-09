@@ -1,7 +1,7 @@
 #ifndef GENERIC_TREE_H
 #define GENERIC_TREE_H
-#include "system.h"
-#include "dll.h"
+#include <system.h>
+#include <dll.h>
 
 typedef struct tree_node
 {

@@ -1,8 +1,7 @@
-#include "disk.h"      // Include header file for disk-related functionality
-#include "io/io.h"     // Include header file for I/O operations
-#include "config.h"    // Include configuration header file
-#include "status.h"    // Include header file for status codes
-#include "mm/memory.h" // Include header file for memory operations
+#include <disk/disk.h>          // Include header file for disk-related functionality
+#include <io/io.h>         // Include header file for I/O operations
+#include <common/system.h> // Include configuration header file
+#include <mm/memory.h>     // Include header file for memory operations
 
 struct disk_t disk; // Declare a disk structure named "disk"
 
@@ -46,9 +45,10 @@ void disk_search_and_init()
 
 struct disk_t *disk_get(int index)
 {
-  if (index != 0)
+  if (index != 0){
     return 0; // If the provided index is not 0, return NULL
-
+  }
+  
   return &disk; // Return a pointer to the disk structure
 }
 

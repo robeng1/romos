@@ -7,10 +7,9 @@
 
 void start_kernel();
 void print(const char *str);
-void panic(const char *msg);
 void switch_to_kernel_page();
 extern void kernel_registers();
-void term_writechar(char c, char colour);
+void term_writechar(char c);
 
 #define ERROR(value) (void *)(value)
 #define ERROR_I(value) (int)(value)
