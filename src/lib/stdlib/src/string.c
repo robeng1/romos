@@ -1,8 +1,9 @@
-#include "string.h"
+#include <string.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdarg.h>
 #include <memory.h>
+#include <stdbool.h>
 
 int strlen(const char *s)
 {
